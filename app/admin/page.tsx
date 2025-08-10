@@ -17,7 +17,7 @@ interface Submission {
   phone: string
   domain: string
   task_option?: string
-  project_title: string
+  project_title?: string
   project_description?: string
   project_link?: string
   github_link?: string
@@ -26,8 +26,13 @@ interface Submission {
   challenges_faced?: string
   learning_outcomes?: string
   additional_comments?: string
-  submission_status: string
+  submission_status?: string
   created_at: string
+  // Competitive Programming specific fields
+  codeforces_profile?: string
+  codeforces_rating?: string
+  leetcode_profile?: string
+  leetcode_rating?: string
 }
 
 export default function AdminPage() {
@@ -106,7 +111,9 @@ export default function AdminPage() {
           sub.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           sub.roll_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
           sub.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          sub.project_title.toLowerCase().includes(searchTerm.toLowerCase()),
+          sub.project_title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          sub.codeforces_profile?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          sub.leetcode_profile?.toLowerCase().includes(searchTerm.toLowerCase()),
       )
     }
 
@@ -118,33 +125,75 @@ export default function AdminPage() {
   }
 
   const exportToCSV = () => {
-    const headers = [
+    // Dynamic headers based on domain
+    const baseHeaders = [
       "Name",
-      "Roll Number",
+      "Roll Number", 
       "Email",
       "Phone",
       "Domain",
       "Task Option",
-      "Project Title",
-      "Project Link",
-      "GitHub Link",
-      "Technologies Used",
       "Submission Date",
     ]
 
-    const csvData = filteredSubmissions.map((sub) => [
-      sub.name,
-      sub.roll_number,
-      sub.email,
-      sub.phone,
-      sub.domain,
-      sub.task_option || "",
-      sub.project_title,
-      sub.project_link || "",
-      sub.github_link || "",
-      sub.technologies_used || "",
-      new Date(sub.created_at).toLocaleDateString(),
-    ])
+    // Add domain-specific headers
+    const domainSpecificHeaders = []
+    const hasCP = filteredSubmissions.some(sub => sub.domain === "competitive-programming")
+    const hasTechnical = filteredSubmissions.some(sub => 
+      sub.domain !== "competitive-programming" && (sub.project_title || sub.github_link)
+    )
+
+    if (hasTechnical) {
+      domainSpecificHeaders.push("Project Title", "Project Link", "GitHub Link", "Technologies Used")
+    }
+
+    if (hasCP) {
+      domainSpecificHeaders.push("Codeforces Profile", "Codeforces Rating", "LeetCode Profile", "LeetCode Rating")
+    }
+
+    const headers = [...baseHeaders, ...domainSpecificHeaders, "Additional Comments"]
+
+    const csvData = filteredSubmissions.map((sub) => {
+      const baseData = [
+        sub.name,
+        sub.roll_number,
+        sub.email,
+        sub.phone,
+        sub.domain,
+        sub.task_option || "",
+        new Date(sub.created_at).toLocaleDateString(),
+      ]
+
+      const domainSpecificData = []
+      
+      if (hasTechnical) {
+        if (sub.domain === "competitive-programming") {
+          domainSpecificData.push("", "", "", "") // Empty for CP submissions
+        } else {
+          domainSpecificData.push(
+            sub.project_title || "",
+            sub.project_link || "",
+            sub.github_link || "",
+            sub.technologies_used || ""
+          )
+        }
+      }
+
+      if (hasCP) {
+        if (sub.domain === "competitive-programming") {
+          domainSpecificData.push(
+            sub.codeforces_profile || "",
+            sub.codeforces_rating || "",
+            sub.leetcode_profile || "",
+            sub.leetcode_rating || ""
+          )
+        } else {
+          domainSpecificData.push("", "", "", "") // Empty for non-CP submissions
+        }
+      }
+
+      return [...baseData, ...domainSpecificData, sub.additional_comments || ""]
+    })
 
     const csvContent = [headers, ...csvData].map((row) => row.map((field) => `"${field}"`).join(",")).join("\n")
 
@@ -236,7 +285,7 @@ export default function AdminPage() {
                 <div className="relative">
                   <Search className="absolute left-3 top-2.5 sm:top-3 h-3.5 w-3.5 sm:h-4 sm:w-4 text-gray-400" />
                   <Input
-                    placeholder="Search by name, roll number, email, or project title..."
+                    placeholder="Search by name, roll number, email, project title, or coding profiles..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-9 sm:pl-10 text-sm sm:text-base h-9 sm:h-10"
@@ -309,32 +358,81 @@ export default function AdminPage() {
                   <div>
                     <span className="font-medium">Roll Number:</span> {submission.roll_number}
                   </div>
-                  <div>
-                    <span className="font-medium">Project:</span>
-                    <span className="block sm:inline sm:ml-1 break-words">{submission.project_title}</span>
-                  </div>
+                  
+                  {/* Domain-specific display */}
+                  {submission.domain === "competitive-programming" ? (
+                    <div>
+                      <span className="font-medium">Profiles:</span>
+                      <div className="text-xs sm:text-sm mt-1">
+                        {submission.codeforces_profile && (
+                          <div>Codeforces: {submission.codeforces_profile}</div>
+                        )}
+                        {submission.leetcode_profile && (
+                          <div>LeetCode: {submission.leetcode_profile}</div>
+                        )}
+                        {!submission.codeforces_profile && !submission.leetcode_profile && (
+                          <div className="text-gray-500">No profiles provided</div>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <span className="font-medium">
+                        {submission.domain === "creative-domain" ? "Design:" : "Project:"}
+                      </span>
+                      <span className="block sm:inline sm:ml-1 break-words">
+                        {submission.project_title || "No title provided"}
+                      </span>
+                    </div>
+                  )}
+                  
                   {submission.task_option && (
                     <div>
                       <span className="font-medium">Task:</span>
                       <span className="block sm:inline sm:ml-1 text-xs sm:text-sm">{submission.task_option}</span>
                     </div>
                   )}
+                  
+                  {/* Domain-specific action buttons */}
                   <div className="flex flex-col sm:flex-row gap-2 mt-3">
-                    {submission.project_link && (
-                      <Button size="sm" variant="outline" className="text-xs h-8 w-full sm:w-auto" asChild>
-                        <a href={submission.project_link} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="mr-1 h-3 w-3" />
-                          Demo
-                        </a>
-                      </Button>
-                    )}
-                    {submission.github_link && (
-                      <Button size="sm" variant="outline" className="text-xs h-8 w-full sm:w-auto" asChild>
-                        <a href={submission.github_link} target="_blank" rel="noopener noreferrer">
-                          <Code className="mr-1 h-3 w-3" />
-                          GitHub
-                        </a>
-                      </Button>
+                    {submission.domain === "competitive-programming" ? (
+                      <>
+                        {submission.codeforces_profile && (
+                          <Button size="sm" variant="outline" className="text-xs h-8 w-full sm:w-auto" asChild>
+                            <a href={submission.codeforces_profile} target="_blank" rel="noopener noreferrer">
+                              <Code className="mr-1 h-3 w-3" />
+                              Codeforces
+                            </a>
+                          </Button>
+                        )}
+                        {submission.leetcode_profile && (
+                          <Button size="sm" variant="outline" className="text-xs h-8 w-full sm:w-auto" asChild>
+                            <a href={submission.leetcode_profile} target="_blank" rel="noopener noreferrer">
+                              <Code className="mr-1 h-3 w-3" />
+                              LeetCode
+                            </a>
+                          </Button>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        {submission.project_link && (
+                          <Button size="sm" variant="outline" className="text-xs h-8 w-full sm:w-auto" asChild>
+                            <a href={submission.project_link} target="_blank" rel="noopener noreferrer">
+                              <ExternalLink className="mr-1 h-3 w-3" />
+                              {submission.domain === "creative-domain" ? "Design Files" : "Demo"}
+                            </a>
+                          </Button>
+                        )}
+                        {submission.github_link && submission.domain !== "creative-domain" && (
+                          <Button size="sm" variant="outline" className="text-xs h-8 w-full sm:w-auto" asChild>
+                            <a href={submission.github_link} target="_blank" rel="noopener noreferrer">
+                              <Code className="mr-1 h-3 w-3" />
+                              GitHub
+                            </a>
+                          </Button>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -400,30 +498,89 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                <div>
-                  <h4 className="font-medium mb-2">Project Details</h4>
-                  <div className="space-y-2 text-sm">
-                    <p>
-                      <strong>Title:</strong> {selectedSubmission.project_title}
-                    </p>
-                    {selectedSubmission.project_description && (
-                      <div>
-                        <strong>Description:</strong>
-                        <p className="mt-1 text-gray-700">{selectedSubmission.project_description}</p>
-                      </div>
-                    )}
+                {/* Domain-specific details section */}
+                {selectedSubmission.domain === "competitive-programming" ? (
+                  <div>
+                    <h4 className="font-medium mb-2">Competitive Programming Profiles</h4>
+                    <div className="space-y-2 text-sm">
+                      {selectedSubmission.codeforces_profile && (
+                        <div>
+                          <strong>Codeforces Profile:</strong>{" "}
+                          <a
+                            href={selectedSubmission.codeforces_profile}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline"
+                          >
+                            {selectedSubmission.codeforces_profile}
+                          </a>
+                          {selectedSubmission.codeforces_rating && (
+                            <span className="ml-2 text-gray-600">
+                              (Rating: {selectedSubmission.codeforces_rating})
+                            </span>
+                          )}
+                        </div>
+                      )}
+                      {selectedSubmission.leetcode_profile && (
+                        <div>
+                          <strong>LeetCode Profile:</strong>{" "}
+                          <a
+                            href={selectedSubmission.leetcode_profile}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline"
+                          >
+                            {selectedSubmission.leetcode_profile}
+                          </a>
+                          {selectedSubmission.leetcode_rating && (
+                            <span className="ml-2 text-gray-600">
+                              (Rating: {selectedSubmission.leetcode_rating})
+                            </span>
+                          )}
+                        </div>
+                      )}
+                      {!selectedSubmission.codeforces_profile && !selectedSubmission.leetcode_profile && (
+                        <p className="text-gray-500">No coding profiles provided</p>
+                      )}
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div>
+                    <h4 className="font-medium mb-2">
+                      {selectedSubmission.domain === "creative-domain" ? "Creative Work Details" : "Project Details"}
+                    </h4>
+                    <div className="space-y-2 text-sm">
+                      <p>
+                        <strong>
+                          {selectedSubmission.domain === "creative-domain" ? "Design Title:" : "Title:"}
+                        </strong>{" "}
+                        {selectedSubmission.project_title || "No title provided"}
+                      </p>
+                      {selectedSubmission.project_description && (
+                        <div>
+                          <strong>
+                            {selectedSubmission.domain === "creative-domain" ? "Design Description:" : "Description:"}
+                          </strong>
+                          <p className="mt-1 text-gray-700">{selectedSubmission.project_description}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
 
-                {(selectedSubmission.project_link ||
-                  selectedSubmission.github_link ||
-                  selectedSubmission.additional_links) && (
+                {/* Links section - only for non-CP domains */}
+                {selectedSubmission.domain !== "competitive-programming" && 
+                 (selectedSubmission.project_link || selectedSubmission.github_link || selectedSubmission.additional_links) && (
                     <div>
-                      <h4 className="font-medium mb-2">Links</h4>
+                      <h4 className="font-medium mb-2">
+                        {selectedSubmission.domain === "creative-domain" ? "Design Files & Links" : "Project Links"}
+                      </h4>
                       <div className="space-y-1 text-sm">
                         {selectedSubmission.project_link && (
                           <p>
-                            <strong>Project Link:</strong>{" "}
+                            <strong>
+                              {selectedSubmission.domain === "creative-domain" ? "Design Files:" : "Project Link:"}
+                            </strong>{" "}
                             <a
                               href={selectedSubmission.project_link}
                               target="_blank"
@@ -434,7 +591,7 @@ export default function AdminPage() {
                             </a>
                           </p>
                         )}
-                        {selectedSubmission.github_link && (
+                        {selectedSubmission.github_link && selectedSubmission.domain !== "creative-domain" && (
                           <p>
                             <strong>GitHub:</strong>{" "}
                             <a
@@ -449,7 +606,9 @@ export default function AdminPage() {
                         )}
                         {selectedSubmission.additional_links && (
                           <div>
-                            <strong>Additional Links:</strong>
+                            <strong>
+                              {selectedSubmission.domain === "creative-domain" ? "Portfolio & Other Links:" : "Additional Links:"}
+                            </strong>
                             <pre className="mt-1 text-gray-700 whitespace-pre-wrap">
                               {selectedSubmission.additional_links}
                             </pre>
@@ -459,23 +618,42 @@ export default function AdminPage() {
                     </div>
                   )}
 
-                {selectedSubmission.technologies_used && (
+                {/* Additional links for competitive programming */}
+                {selectedSubmission.domain === "competitive-programming" && selectedSubmission.additional_links && (
                   <div>
-                    <h4 className="font-medium mb-2">Technologies Used</h4>
+                    <h4 className="font-medium mb-2">Additional Information</h4>
+                    <div className="text-sm">
+                      <pre className="text-gray-700 whitespace-pre-wrap">
+                        {selectedSubmission.additional_links}
+                      </pre>
+                    </div>
+                  </div>
+                )}
+
+                {/* Technical/Creative details - only for non-CP domains */}
+                {selectedSubmission.domain !== "competitive-programming" && selectedSubmission.technologies_used && (
+                  <div>
+                    <h4 className="font-medium mb-2">
+                      {selectedSubmission.domain === "creative-domain" ? "Tools & Software Used" : "Technologies Used"}
+                    </h4>
                     <p className="text-sm text-gray-700">{selectedSubmission.technologies_used}</p>
                   </div>
                 )}
 
-                {selectedSubmission.challenges_faced && (
+                {selectedSubmission.domain !== "competitive-programming" && selectedSubmission.challenges_faced && (
                   <div>
-                    <h4 className="font-medium mb-2">Challenges Faced</h4>
+                    <h4 className="font-medium mb-2">
+                      {selectedSubmission.domain === "creative-domain" ? "Creative Challenges" : "Challenges Faced"}
+                    </h4>
                     <p className="text-sm text-gray-700">{selectedSubmission.challenges_faced}</p>
                   </div>
                 )}
 
-                {selectedSubmission.learning_outcomes && (
+                {selectedSubmission.domain !== "competitive-programming" && selectedSubmission.learning_outcomes && (
                   <div>
-                    <h4 className="font-medium mb-2">Learning Outcomes</h4>
+                    <h4 className="font-medium mb-2">
+                      {selectedSubmission.domain === "creative-domain" ? "Creative Learning & Growth" : "Learning Outcomes"}
+                    </h4>
                     <p className="text-sm text-gray-700">{selectedSubmission.learning_outcomes}</p>
                   </div>
                 )}

@@ -68,7 +68,9 @@ export async function POST(request: NextRequest) {
       phone: body.phone.trim(),
       domain: body.domain,
       task_option: body.task_option || null,
-      project_title: body.domain === "competitive-programming" ? "Competitive Programming Profile" : body.project_title.trim(),
+      project_title: body.domain === "competitive-programming" 
+        ? "Competitive Programming Profile" 
+        : (body.project_title?.trim() || ""),
       project_description: body.project_description?.trim() || null,
       project_link: body.project_link?.trim() || null,
       github_link: body.github_link?.trim() || null,

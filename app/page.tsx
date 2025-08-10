@@ -1061,7 +1061,7 @@ export default function ACMRecruitmentPage() {
               <CardContent className="flex-grow flex flex-col justify-center space-y-2 sm:space-y-3">
                 <div className="text-xs sm:text-sm">
                   <p className="font-medium">Email:</p>
-                  <p className="text-blue-600 break-all">lnmiit.acm@gmail.com</p>
+                  <p className="text-blue-600 break-all">acm-chapter@lnmiit.ac.in</p>
                 </div>
                 <div className="text-xs sm:text-sm">
                   <p className="font-medium">Phone:</p>

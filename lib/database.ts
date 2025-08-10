@@ -10,10 +10,10 @@ export interface Submission {
   phone: string
   domain: string
   task_option?: string
-  project_title: string
+  project_title?: string // Optional for competitive programming, required for others
   project_description?: string
   project_link?: string
-  github_link?: string
+  github_link?: string // Optional for creative domain
   additional_links?: string
   technologies_used?: string
   challenges_faced?: string
@@ -22,6 +22,11 @@ export interface Submission {
   submission_status?: string
   created_at?: string
   updated_at?: string
+  // Competitive Programming specific fields
+  codeforces_profile?: string
+  codeforces_rating?: string
+  leetcode_profile?: string
+  leetcode_rating?: string
 }
 
 export async function createSubmission(submission: Submission) {
@@ -31,7 +36,8 @@ export async function createSubmission(submission: Submission) {
         name, roll_number, email, phone, domain, task_option,
         project_title, project_description, project_link, github_link,
         additional_links, technologies_used, challenges_faced,
-        learning_outcomes, additional_comments
+        learning_outcomes, additional_comments, codeforces_profile,
+        codeforces_rating, leetcode_profile, leetcode_rating
       ) VALUES (
         ${submission.name}, ${submission.roll_number}, ${submission.email},
         ${submission.phone}, ${submission.domain}, ${submission.task_option},
@@ -39,7 +45,9 @@ export async function createSubmission(submission: Submission) {
         ${submission.project_link}, ${submission.github_link},
         ${submission.additional_links}, ${submission.technologies_used},
         ${submission.challenges_faced}, ${submission.learning_outcomes},
-        ${submission.additional_comments}
+        ${submission.additional_comments}, ${submission.codeforces_profile},
+        ${submission.codeforces_rating}, ${submission.leetcode_profile},
+        ${submission.leetcode_rating}
       )
       RETURNING *
     `

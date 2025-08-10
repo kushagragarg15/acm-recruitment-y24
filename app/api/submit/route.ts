@@ -5,8 +5,25 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
 
-    // Validate required fields
-    const requiredFields = ["name", "roll_number", "email", "phone", "domain", "project_title"]
+    // Validate required fields based on domain
+    let requiredFields = ["name", "roll_number", "email", "phone", "domain"]
+    
+    if (body.domain === "competitive-programming") {
+      // For competitive programming, at least one profile is required
+      if (!body.codeforces_profile?.trim() && !body.leetcode_profile?.trim()) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "At least one coding profile (Codeforces or LeetCode) is required for Competitive Programming domain",
+          },
+          { status: 400 },
+        )
+      }
+    } else {
+      // For other domains, project title is required
+      requiredFields.push("project_title")
+    }
+
     const missingFields = requiredFields.filter((field) => !body[field]?.trim())
 
     if (missingFields.length > 0) {
@@ -51,7 +68,7 @@ export async function POST(request: NextRequest) {
       phone: body.phone.trim(),
       domain: body.domain,
       task_option: body.task_option || null,
-      project_title: body.project_title.trim(),
+      project_title: body.domain === "competitive-programming" ? "Competitive Programming Profile" : body.project_title.trim(),
       project_description: body.project_description?.trim() || null,
       project_link: body.project_link?.trim() || null,
       github_link: body.github_link?.trim() || null,
@@ -60,6 +77,11 @@ export async function POST(request: NextRequest) {
       challenges_faced: body.challenges_faced?.trim() || null,
       learning_outcomes: body.learning_outcomes?.trim() || null,
       additional_comments: body.additional_comments?.trim() || null,
+      // Add competitive programming specific fields
+      codeforces_profile: body.codeforces_profile?.trim() || null,
+      codeforces_rating: body.codeforces_rating?.trim() || null,
+      leetcode_profile: body.leetcode_profile?.trim() || null,
+      leetcode_rating: body.leetcode_rating?.trim() || null,
     }
 
     // Save to database

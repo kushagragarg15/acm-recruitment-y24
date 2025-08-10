@@ -27,6 +27,7 @@ import {
   MessageSquare,
 } from "lucide-react"
 import Link from "next/link"
+import { toast } from "sonner"
 
 const domains = [
   { value: "web-development", label: "Web Development" },
@@ -61,6 +62,11 @@ export default function SubmissionPage() {
     challenges_faced: "",
     learning_outcomes: "",
     additional_comments: "",
+    // Competitive Programming specific fields
+    codeforces_profile: "",
+    codeforces_rating: "",
+    leetcode_profile: "",
+    leetcode_rating: "",
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -82,6 +88,11 @@ export default function SubmissionPage() {
     setIsSubmitting(true)
     setSubmitStatus({ type: null, message: "" })
 
+    // Show loading toast
+    const loadingToast = toast.loading("Submitting your project...", {
+      description: "Please wait while we process your submission.",
+    })
+
     try {
       const response = await fetch("/api/submit", {
         method: "POST",
@@ -94,11 +105,17 @@ export default function SubmissionPage() {
       const result = await response.json()
 
       if (result.success) {
-        setSubmitStatus({
-          type: "success",
-          message:
-            "Your submission has been received successfully! You will be notified about the next steps via email.",
+        // Dismiss loading toast and show success
+        toast.dismiss(loadingToast)
+        toast.success("Submission Successful! 🎉", {
+          description: "Your project has been submitted successfully! You will be notified about the next steps via email.",
+          duration: 6000,
+          action: {
+            label: "View Homepage",
+            onClick: () => window.location.href = "/",
+          },
         })
+        
         // Reset form
         setFormData({
           name: "",
@@ -116,14 +133,35 @@ export default function SubmissionPage() {
           challenges_faced: "",
           learning_outcomes: "",
           additional_comments: "",
+          codeforces_profile: "",
+          codeforces_rating: "",
+          leetcode_profile: "",
+          leetcode_rating: "",
         })
+        
+        // Clear any existing status
+        setSubmitStatus({ type: null, message: "" })
       } else {
+        // Dismiss loading toast and show error
+        toast.dismiss(loadingToast)
+        toast.error("Submission Failed", {
+          description: result.error || "Please check your information and try again.",
+          duration: 5000,
+        })
+        
         setSubmitStatus({
           type: "error",
           message: result.error || "Submission failed. Please try again.",
         })
       }
     } catch (error) {
+      // Dismiss loading toast and show network error
+      toast.dismiss(loadingToast)
+      toast.error("Network Error", {
+        description: "Please check your connection and try again.",
+        duration: 5000,
+      })
+      
       setSubmitStatus({
         type: "error",
         message: "Network error. Please check your connection and try again.",
@@ -133,13 +171,22 @@ export default function SubmissionPage() {
     }
   }
 
-  const isFormValid =
-    formData.name &&
-    formData.roll_number &&
-    formData.email &&
-    formData.phone &&
-    formData.domain &&
-    formData.project_title
+  const isFormValid = () => {
+    const basicFieldsValid = 
+      formData.name &&
+      formData.roll_number &&
+      formData.email &&
+      formData.phone &&
+      formData.domain
+
+    if (formData.domain === "competitive-programming") {
+      // For CP, at least one profile is required
+      return basicFieldsValid && (formData.codeforces_profile || formData.leetcode_profile)
+    } else {
+      // For other domains, project title is required
+      return basicFieldsValid && formData.project_title
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#8ECAE6]/20 to-[#219EBC]/20">
@@ -333,19 +380,99 @@ export default function SubmissionPage() {
                   </div>
                 </div>
 
-                {/* Project Information */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Project Information</h3>
+                {/* Competitive Programming Specific Fields */}
+                {formData.domain === "competitive-programming" && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Coding Profiles</h3>
+                    <p className="text-sm text-gray-600">
+                      Please provide at least one coding profile. Both profiles are preferred for better evaluation.
+                    </p>
+
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="codeforces_profile" className="text-sm">
+                          Codeforces Profile URL
+                        </Label>
+                        <Input
+                          id="codeforces_profile"
+                          type="url"
+                          placeholder="https://codeforces.com/profile/username"
+                          value={formData.codeforces_profile}
+                          onChange={(e) => handleInputChange("codeforces_profile", e.target.value)}
+                          className="text-sm sm:text-base"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="codeforces_rating" className="text-sm">
+                          Codeforces Rating (if available)
+                        </Label>
+                        <Input
+                          id="codeforces_rating"
+                          type="number"
+                          placeholder="e.g., 1200"
+                          value={formData.codeforces_rating}
+                          onChange={(e) => handleInputChange("codeforces_rating", e.target.value)}
+                          className="text-sm sm:text-base"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="leetcode_profile" className="text-sm">
+                          LeetCode Profile URL
+                        </Label>
+                        <Input
+                          id="leetcode_profile"
+                          type="url"
+                          placeholder="https://leetcode.com/username"
+                          value={formData.leetcode_profile}
+                          onChange={(e) => handleInputChange("leetcode_profile", e.target.value)}
+                          className="text-sm sm:text-base"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="leetcode_rating" className="text-sm">
+                          LeetCode Rating (if available)
+                        </Label>
+                        <Input
+                          id="leetcode_rating"
+                          type="number"
+                          placeholder="e.g., 1800"
+                          value={formData.leetcode_rating}
+                          onChange={(e) => handleInputChange("leetcode_rating", e.target.value)}
+                          className="text-sm sm:text-base"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-[#FFB703]/10 border border-[#FFB703]/30 rounded-lg">
+                      <p className="text-sm text-[#023047]">
+                        <strong>Note:</strong> At least one profile (Codeforces or LeetCode) is mandatory. 
+                        Providing both profiles will give you bonus points in evaluation.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Project Information - Hidden for Competitive Programming */}
+                {formData.domain !== "competitive-programming" && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
+                      {formData.domain === "creative-domain" ? "Creative Work Information" : "Project Information"}
+                    </h3>
 
                   <div className="space-y-2">
                     <Label htmlFor="project_title" className="flex items-center space-x-1">
                       <FileText className="h-4 w-4" />
-                      <span>Project Title *</span>
+                      <span>{formData.domain === "creative-domain" ? "Design Title *" : "Project Title *"}</span>
                     </Label>
                     <Input
                       id="project_title"
                       type="text"
-                      placeholder="Enter your project title"
+                      placeholder={formData.domain === "creative-domain" ? "Enter your design title" : "Enter your project title"}
                       value={formData.project_title}
                       onChange={(e) => handleInputChange("project_title", e.target.value)}
                       required
@@ -353,67 +480,126 @@ export default function SubmissionPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="project_description">Project Description</Label>
+                    <Label htmlFor="project_description">
+                      {formData.domain === "creative-domain" ? "Design Description" : "Project Description"}
+                    </Label>
                     <Textarea
                       id="project_description"
-                      placeholder="Briefly describe your project, its features, and what makes it unique..."
+                      placeholder={
+                        formData.domain === "creative-domain" 
+                          ? "Describe your design concept, inspiration, and creative approach..."
+                          : "Briefly describe your project, its features, and what makes it unique..."
+                      }
                       value={formData.project_description}
                       onChange={(e) => handleInputChange("project_description", e.target.value)}
                       rows={4}
                     />
                   </div>
 
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="project_link" className="flex items-center space-x-1">
-                        <LinkIcon className="h-4 w-4" />
-                        <span>Project/Demo Link</span>
-                      </Label>
-                      <Input
-                        id="project_link"
-                        type="url"
-                        placeholder="https://your-project-demo.com"
-                        value={formData.project_link}
-                        onChange={(e) => handleInputChange("project_link", e.target.value)}
-                      />
-                    </div>
+                  {/* Creative Domain - Different layout without GitHub */}
+                  {formData.domain === "creative-domain" ? (
+                    <div className="space-y-4">
+                      <div className="p-3 bg-[#8ECAE6]/10 border border-[#8ECAE6]/30 rounded-lg">
+                        <p className="text-sm text-[#023047]">
+                          <strong>Creative Domain Guidelines:</strong> Share your design files through cloud storage or portfolio platforms. 
+                          GitHub repository is not required for creative submissions.
+                        </p>
+                      </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="github_link" className="flex items-center space-x-1">
-                        <ExternalLink className="h-4 w-4" />
-                        <span>GitHub Repository</span>
-                      </Label>
-                      <Input
-                        id="github_link"
-                        type="url"
-                        placeholder="https://github.com/username/repo"
-                        value={formData.github_link}
-                        onChange={(e) => handleInputChange("github_link", e.target.value)}
-                      />
-                    </div>
-                  </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="project_link" className="flex items-center space-x-1">
+                          <LinkIcon className="h-4 w-4" />
+                          <span>Design Files/Portfolio Link</span>
+                        </Label>
+                        <Input
+                          id="project_link"
+                          type="url"
+                          placeholder="https://drive.google.com/... or https://behance.net/..."
+                          value={formData.project_link}
+                          onChange={(e) => handleInputChange("project_link", e.target.value)}
+                        />
+                        <p className="text-xs text-gray-500">
+                          Share your design files via Google Drive, Behance, Dribbble, or similar platforms
+                        </p>
+                      </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="additional_links">Additional Links</Label>
-                    <Textarea
-                      id="additional_links"
-                      placeholder="Any additional links (documentation, video demo, design files, etc.) - one per line"
-                      value={formData.additional_links}
-                      onChange={(e) => handleInputChange("additional_links", e.target.value)}
-                      rows={3}
-                    />
-                  </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="additional_links">Additional Creative Links</Label>
+                        <Textarea
+                          id="additional_links"
+                          placeholder="Portfolio website, Instagram, other design work links - one per line"
+                          value={formData.additional_links}
+                          onChange={(e) => handleInputChange("additional_links", e.target.value)}
+                          rows={3}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    /* Other Domains - Include GitHub */
+                    <div className="space-y-4">
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <Label htmlFor="project_link" className="flex items-center space-x-1">
+                            <LinkIcon className="h-4 w-4" />
+                            <span>Project/Demo Link</span>
+                          </Label>
+                          <Input
+                            id="project_link"
+                            type="url"
+                            placeholder="https://your-project-demo.com"
+                            value={formData.project_link}
+                            onChange={(e) => handleInputChange("project_link", e.target.value)}
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="github_link" className="flex items-center space-x-1">
+                            <ExternalLink className="h-4 w-4" />
+                            <span>GitHub Repository</span>
+                          </Label>
+                          <Input
+                            id="github_link"
+                            type="url"
+                            placeholder="https://github.com/username/repo"
+                            value={formData.github_link}
+                            onChange={(e) => handleInputChange("github_link", e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="additional_links">Additional Links</Label>
+                        <Textarea
+                          id="additional_links"
+                          placeholder="Any additional links (documentation, video demo, design files, etc.) - one per line"
+                          value={formData.additional_links}
+                          onChange={(e) => handleInputChange("additional_links", e.target.value)}
+                          rows={3}
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
+                )}
 
-                {/* Technical Details */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Technical Details</h3>
+                {/* Technical/Creative Details - Hidden for Competitive Programming */}
+                {formData.domain !== "competitive-programming" && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
+                      {formData.domain === "creative-domain" ? "Creative Process" : "Technical Details"}
+                    </h3>
 
                   <div className="space-y-2">
-                    <Label htmlFor="technologies_used">Technologies Used</Label>
+                    <Label htmlFor="technologies_used">
+                      {formData.domain === "creative-domain" ? "Tools & Software Used" : "Technologies Used"}
+                    </Label>
                     <Textarea
                       id="technologies_used"
-                      placeholder="List the technologies, frameworks, libraries, and tools you used..."
+                      placeholder={
+                        formData.domain === "creative-domain"
+                          ? "List the design tools and software you used (e.g., Figma, Photoshop, Illustrator, Canva, etc.)..."
+                          : "List the technologies, frameworks, libraries, and tools you used..."
+                      }
                       value={formData.technologies_used}
                       onChange={(e) => handleInputChange("technologies_used", e.target.value)}
                       rows={3}
@@ -421,10 +607,16 @@ export default function SubmissionPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="challenges_faced">Challenges Faced</Label>
+                    <Label htmlFor="challenges_faced">
+                      {formData.domain === "creative-domain" ? "Creative Challenges" : "Challenges Faced"}
+                    </Label>
                     <Textarea
                       id="challenges_faced"
-                      placeholder="Describe any challenges you encountered and how you overcame them..."
+                      placeholder={
+                        formData.domain === "creative-domain"
+                          ? "Describe any creative challenges you faced and how you solved them..."
+                          : "Describe any challenges you encountered and how you overcame them..."
+                      }
                       value={formData.challenges_faced}
                       onChange={(e) => handleInputChange("challenges_faced", e.target.value)}
                       rows={3}
@@ -432,16 +624,23 @@ export default function SubmissionPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="learning_outcomes">Learning Outcomes</Label>
+                    <Label htmlFor="learning_outcomes">
+                      {formData.domain === "creative-domain" ? "Creative Learning & Growth" : "Learning Outcomes"}
+                    </Label>
                     <Textarea
                       id="learning_outcomes"
-                      placeholder="What did you learn from this project? What skills did you develop?"
+                      placeholder={
+                        formData.domain === "creative-domain"
+                          ? "What did you learn from this creative process? What design skills did you develop or improve?"
+                          : "What did you learn from this project? What skills did you develop?"
+                      }
                       value={formData.learning_outcomes}
                       onChange={(e) => handleInputChange("learning_outcomes", e.target.value)}
                       rows={3}
                     />
                   </div>
                 </div>
+                )}
 
                 {/* Additional Comments */}
                 <div className="space-y-4">
@@ -454,7 +653,11 @@ export default function SubmissionPage() {
                     </Label>
                     <Textarea
                       id="additional_comments"
-                      placeholder="Any additional information you'd like to share about your project or yourself..."
+                      placeholder={
+                        formData.domain === "competitive-programming" 
+                          ? "Any additional information about your competitive programming journey, achievements, or goals..."
+                          : "Any additional information you'd like to share about your project or yourself..."
+                      }
                       value={formData.additional_comments}
                       onChange={(e) => handleInputChange("additional_comments", e.target.value)}
                       rows={3}
@@ -472,7 +675,7 @@ export default function SubmissionPage() {
                     <Button
                       type="submit"
                       size="lg"
-                      disabled={!isFormValid || isSubmitting}
+                      disabled={!isFormValid() || isSubmitting}
                       className="w-full sm:w-auto bg-[#219EBC] hover:bg-[#023047]"
                     >
                       {isSubmitting ? (

@@ -27,6 +27,7 @@ import {
 import Link from "next/link"
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon"
 import { LinkedInIcon } from "@/components/icons/LinkedInIcon"
+import { RotatingFactsBar } from "@/components/RotatingFactsBar"
 
 export default function ACMRecruitmentPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -135,6 +136,9 @@ export default function ACMRecruitmentPage() {
         </div>
       </header>
 
+      {/* Rotating Facts Bar */}
+      <RotatingFactsBar />
+
       {/* Hero Section */}
       <section className="w-full py-8 sm:py-12 md:py-16 lg:py-24 xl:py-32">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -143,23 +147,23 @@ export default function ACMRecruitmentPage() {
               <Calendar className="mr-1.5 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
               Recruitment Open - Y24 Batch
             </Badge>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tighter bg-gradient-to-r from-[#219EBC] to-[#023047] bg-clip-text text-transparent leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight bg-gradient-to-r from-[#219EBC] to-[#023047] bg-clip-text text-transparent leading-tight">
               Join ACM Student Chapter
             </h1>
-            <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-[#023047] px-2">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-medium text-[#023047] px-2 mt-4">
               LNMIIT - Association for Computing Machinery
             </h2>
-            <p className="mx-auto max-w-[90%] sm:max-w-[700px] text-sm sm:text-base md:text-lg lg:text-xl text-[#023047]/80 leading-relaxed px-2">
+            <p className="mx-auto max-w-[90%] sm:max-w-[800px] text-base sm:text-lg md:text-xl lg:text-2xl text-[#023047]/80 leading-relaxed px-2 mt-6">
               Be part of the world's largest educational and scientific computing society. Showcase your skills, learn
               from peers, and contribute to cutting-edge technology projects.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6 sm:mt-8 w-full sm:w-auto px-4 sm:px-0">
-              <Button size="lg" className="bg-[#219EBC] hover:bg-[#023047] w-full sm:w-auto" asChild>
+              <Button size="lg" className="bg-[#219EBC] hover:bg-[#023047] w-full sm:w-auto text-lg px-8 py-4 h-auto font-medium" asChild>
                 <a href="#domains">
-                  View Domains <ArrowRight className="ml-2 h-4 w-4" />
+                  View Domains <ArrowRight className="ml-2 h-5 w-5" />
                 </a>
               </Button>
-              <Button size="lg" variant="outline" className="w-full sm:w-auto border-[#219EBC] text-[#219EBC] hover:bg-[#219EBC] hover:text-white" asChild>
+              <Button size="lg" variant="outline" className="w-full sm:w-auto border-[#219EBC] text-[#219EBC] hover:bg-[#219EBC] hover:text-white text-lg px-8 py-4 h-auto font-medium" asChild>
                 <a href="#about">Learn More</a>
               </Button>
             </div>
@@ -171,8 +175,8 @@ export default function ACMRecruitmentPage() {
       <section id="about" className="w-full py-8 sm:py-12 md:py-16 lg:py-24 xl:py-32 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center space-y-3 sm:space-y-4 text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter px-2">Selection Process</h2>
-            <p className="mx-auto max-w-[90%] sm:max-w-[700px] text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 leading-relaxed px-2">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight px-2">Selection Process</h2>
+            <p className="mx-auto max-w-[90%] sm:max-w-[800px] text-lg sm:text-xl md:text-2xl text-[#023047]/80 leading-relaxed px-2 mt-6">
               Our recruitment process is designed to identify passionate individuals with strong technical skills and
               creative thinking.
             </p>
@@ -248,8 +252,8 @@ export default function ACMRecruitmentPage() {
       <section id="domains" className="w-full py-8 sm:py-12 md:py-16 lg:py-24 xl:py-32 bg-gradient-to-br from-blue-50 to-indigo-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center space-y-3 sm:space-y-4 text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter px-2">Choose Your Domain</h2>
-            <p className="mx-auto max-w-[90%] sm:max-w-[700px] text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 leading-relaxed px-2">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight px-2">Choose Your Domain</h2>
+            <p className="mx-auto max-w-[90%] sm:max-w-[800px] text-lg sm:text-xl md:text-2xl text-[#023047]/80 leading-relaxed px-2 mt-6">
               Select ONE domain that best matches your interests and skills. Each domain has specific tasks designed to
               showcase your abilities.
             </p>
@@ -261,9 +265,9 @@ export default function ACMRecruitmentPage() {
               <CardHeader className="pb-4 sm:pb-6">
                 <div className="flex items-center space-x-2">
                   <Code className="h-5 w-5 sm:h-6 sm:w-6 text-[#219EBC] flex-shrink-0" />
-                  <CardTitle className="text-lg sm:text-xl md:text-2xl text-[#023047]">Web Development</CardTitle>
+                  <CardTitle className="text-xl sm:text-2xl md:text-3xl text-[#023047] font-semibold">Web Development</CardTitle>
                 </div>
-                <CardDescription className="text-sm sm:text-base leading-relaxed">
+                <CardDescription className="text-base sm:text-lg leading-relaxed text-[#023047]/70 mt-3">
                   Choose ONE of the following web development tasks to demonstrate your frontend and full-stack skills.
                 </CardDescription>
               </CardHeader>
@@ -387,9 +391,9 @@ export default function ACMRecruitmentPage() {
               <CardHeader className="pb-4 sm:pb-6">
                 <div className="flex items-center space-x-2">
                   <Brain className="h-5 w-5 sm:h-6 sm:w-6 text-[#FFB703] flex-shrink-0" />
-                  <CardTitle className="text-lg sm:text-xl md:text-2xl text-[#023047]">AI/ML</CardTitle>
+                  <CardTitle className="text-xl sm:text-2xl md:text-3xl text-[#023047] font-semibold">AI/ML</CardTitle>
                 </div>
-                <CardDescription className="text-sm sm:text-base leading-relaxed">
+                <CardDescription className="text-base sm:text-lg leading-relaxed text-[#023047]/70 mt-3">
                   Choose ONE of the following machine learning tasks to demonstrate your data science and modeling
                   skills.
                 </CardDescription>
@@ -531,9 +535,9 @@ export default function ACMRecruitmentPage() {
               <CardHeader className="pb-4 sm:pb-6">
                 <div className="flex items-center space-x-2">
                   <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-[#023047] flex-shrink-0" />
-                  <CardTitle className="text-lg sm:text-xl md:text-2xl text-[#023047]">Generative AI</CardTitle>
+                  <CardTitle className="text-xl sm:text-2xl md:text-3xl text-[#023047] font-semibold">Generative AI</CardTitle>
                 </div>
-                <CardDescription className="text-sm sm:text-base leading-relaxed">
+                <CardDescription className="text-base sm:text-lg leading-relaxed text-[#023047]/70 mt-3">
                   Build a Generative AI-powered assistant using open-source tools and models.
                 </CardDescription>
               </CardHeader>
@@ -600,9 +604,9 @@ export default function ACMRecruitmentPage() {
               <CardHeader className="pb-4 sm:pb-6">
                 <div className="flex items-center space-x-2">
                   <Palette className="h-5 w-5 sm:h-6 sm:w-6 text-[#FB8500] flex-shrink-0" />
-                  <CardTitle className="text-lg sm:text-xl md:text-2xl text-[#023047]">Creative Domain</CardTitle>
+                  <CardTitle className="text-xl sm:text-2xl md:text-3xl text-[#023047] font-semibold">Creative Domain</CardTitle>
                 </div>
-                <CardDescription className="text-sm sm:text-base leading-relaxed">
+                <CardDescription className="text-base sm:text-lg leading-relaxed text-[#023047]/70 mt-3">
                   Choose ONE of the following creative design tasks to showcase your artistic and design skills.
                 </CardDescription>
               </CardHeader>
@@ -757,14 +761,14 @@ export default function ACMRecruitmentPage() {
       </section>
 
       {/* Call to Action - Submit Your Project */}
-      <section className="w-full py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-r from-[#219EBC] via-[#023047] to-[#219EBC]">
+      <section id="submission" className="w-full py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-r from-[#219EBC] via-[#023047] to-[#219EBC]">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center text-white">
             <div className="mb-6 sm:mb-8">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
+              <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 sm:mb-8 tracking-tight">
                 Ready to Begin?
               </h2>
-              <p className="text-lg sm:text-xl md:text-2xl mb-6 sm:mb-8 opacity-90 leading-relaxed">
+              <p className="text-xl sm:text-2xl md:text-3xl mb-8 sm:mb-10 opacity-90 leading-relaxed font-medium">
                 Choose your domain, complete the task, and submit your project through our official portal
               </p>
             </div>
@@ -796,7 +800,7 @@ export default function ACMRecruitmentPage() {
                 <div className="text-sm sm:text-base opacity-90">Domain Options</div>
               </div>
               <div className="bg-white/10 backdrop-blur rounded-lg p-4 sm:p-6">
-                <div className="text-2xl sm:text-3xl font-bold mb-2">Aug 20</div>
+                <div className="text-2xl sm:text-3xl font-bold mb-2">Aug 18</div>
                 <div className="text-sm sm:text-base opacity-90">Submission Deadline</div>
               </div>
               <div className="bg-white/10 backdrop-blur rounded-lg p-4 sm:p-6">
@@ -809,7 +813,7 @@ export default function ACMRecruitmentPage() {
       </section>
 
       {/* Submission Guidelines */}
-      <section id="submission" className="w-full py-8 sm:py-12 md:py-16 lg:py-24 xl:py-32 bg-white">
+      <section id="guidelines" className="w-full py-8 sm:py-12 md:py-16 lg:py-24 xl:py-32 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center space-y-3 sm:space-y-4 text-center mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter px-2">Submission Guidelines</h2>
@@ -828,7 +832,7 @@ export default function ACMRecruitmentPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-center p-4 sm:p-6 bg-white rounded-lg border-2 border-red-200">
-                  <div className="text-2xl sm:text-3xl font-bold text-red-600 mb-2">August 20th</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-red-600 mb-2">August 18th</div>
                   <div className="text-base sm:text-lg font-semibold text-red-700 mb-1">11:59 PM IST</div>
                   <div className="text-xs sm:text-sm text-gray-600">Final submission deadline</div>
                 </div>
@@ -1025,8 +1029,8 @@ export default function ACMRecruitmentPage() {
       <section id="contact" className="w-full py-8 sm:py-12 md:py-16 lg:py-24 xl:py-32 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center space-y-3 sm:space-y-4 text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter px-2">Need Help?</h2>
-            <p className="mx-auto max-w-[90%] sm:max-w-[700px] text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 leading-relaxed px-2">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight px-2">Need Help?</h2>
+            <p className="mx-auto max-w-[90%] sm:max-w-[800px] text-lg sm:text-xl md:text-2xl text-[#023047]/80 leading-relaxed px-2 mt-6">
               We're here to support you throughout the recruitment process. Don't hesitate to reach out with any
               questions.
             </p>
@@ -1036,8 +1040,8 @@ export default function ACMRecruitmentPage() {
             <Card className="text-center flex flex-col h-full">
               <CardHeader className="pb-4 sm:pb-6 flex-shrink-0">
                 <WhatsAppIcon className="h-10 w-10 sm:h-12 sm:w-12 text-green-600 mx-auto mb-3 sm:mb-4" />
-                <CardTitle className="text-base sm:text-lg">WhatsApp Support Group</CardTitle>
-                <CardDescription className="text-sm leading-relaxed">
+                <CardTitle className="text-lg sm:text-xl font-semibold">WhatsApp Support Group</CardTitle>
+                <CardDescription className="text-base leading-relaxed text-[#023047]/70 mt-2">
                   Join our dedicated support group for real-time assistance and updates.
                 </CardDescription>
               </CardHeader>
@@ -1053,8 +1057,8 @@ export default function ACMRecruitmentPage() {
             <Card className="text-center flex flex-col h-full">
               <CardHeader className="pb-4 sm:pb-6 flex-shrink-0">
                 <Users className="h-10 w-10 sm:h-12 sm:w-12 text-blue-600 mx-auto mb-3 sm:mb-4" />
-                <CardTitle className="text-base sm:text-lg">Direct Contact</CardTitle>
-                <CardDescription className="text-sm leading-relaxed">
+                <CardTitle className="text-lg sm:text-xl font-semibold">Direct Contact</CardTitle>
+                <CardDescription className="text-base leading-relaxed text-[#023047]/70 mt-2">
                   Reach out to our recruitment team directly for personalized assistance.
                 </CardDescription>
               </CardHeader>

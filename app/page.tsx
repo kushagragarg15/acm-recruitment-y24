@@ -26,6 +26,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon"
+import { LinkedInIcon } from "@/components/icons/LinkedInIcon"
 
 export default function ACMRecruitmentPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -1031,7 +1032,7 @@ export default function ACMRecruitmentPage() {
             </p>
           </div>
 
-          <div className="grid gap-6 sm:gap-8 lg:grid-cols-3 lg:gap-8 max-w-6xl mx-auto">
+          <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-6 max-w-7xl mx-auto">
             <Card className="text-center">
               <CardHeader className="pb-4 sm:pb-6">
                 <WhatsAppIcon className="h-10 w-10 sm:h-12 sm:w-12 text-green-600 mx-auto mb-3 sm:mb-4" />
@@ -1064,8 +1065,25 @@ export default function ACMRecruitmentPage() {
                 </div>
                 <div className="text-xs sm:text-sm">
                   <p className="font-medium">Phone:</p>
-                  <p className="text-blue-600">+91 9588519915</p>
+                  <p className="text-blue-600">+91 92840 36598</p>
                 </div>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center">
+              <CardHeader className="pb-4 sm:pb-6">
+                <LinkedInIcon className="h-10 w-10 sm:h-12 sm:w-12 text-blue-700 mx-auto mb-3 sm:mb-4" />
+                <CardTitle className="text-base sm:text-lg">Follow Us on LinkedIn</CardTitle>
+                <CardDescription className="text-sm leading-relaxed">
+                  Connect with us professionally and stay updated with career opportunities.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="w-full bg-blue-700 hover:bg-blue-800 text-sm h-9 sm:h-10" asChild>
+                  <Link href="https://www.linkedin.com/company/acmlnmiit/posts/?feedView=all" target="_blank" rel="noopener noreferrer">
+                    Follow on LinkedIn <ExternalLink className="ml-1.5 sm:ml-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  </Link>
+                </Button>
               </CardContent>
             </Card>
 

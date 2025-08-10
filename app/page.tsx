@@ -1059,7 +1059,7 @@ export default function ACMRecruitmentPage() {
               <CardContent className="space-y-2 sm:space-y-3">
                 <div className="text-xs sm:text-sm">
                   <p className="font-medium">Email:</p>
-                  <p className="text-blue-600 break-all">acmcodehunt@gmail.com</p>
+                  <p className="text-blue-600 break-all">lnmiit.acm@gmail.com</p>
                 </div>
                 <div className="text-xs sm:text-sm">
                   <p className="font-medium">Phone:</p>

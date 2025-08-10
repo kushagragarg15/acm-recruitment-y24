@@ -1100,7 +1100,7 @@ export default function ACMRecruitmentPage() {
               <img
                 src="/images/acm-logo.png"
                 alt="ACM LNMIIT Logo"
-                className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 object-contain filter brightness-0 invert"
+                className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 object-contain"
               />
               <span className="font-semibold text-xs sm:text-sm md:text-base text-center sm:text-left">ACM Student Chapter LNMIIT</span>
             </div>

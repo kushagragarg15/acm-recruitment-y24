@@ -1104,7 +1104,7 @@ export default function ACMRecruitmentPage() {
               />
               <span className="font-semibold text-xs sm:text-sm md:text-base text-center sm:text-left">ACM Student Chapter LNMIIT</span>
             </div>
-            <div className="text-xs sm:text-sm text-gray-400 text-center">© 2024 ACM Student Chapter LNMIIT. All rights reserved.</div>
+            <div className="text-xs sm:text-sm text-gray-400 text-center">© 2025 ACM Student Chapter LNMIIT. All rights reserved.</div>
           </div>
         </div>
       </footer>

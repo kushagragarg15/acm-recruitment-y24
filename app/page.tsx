@@ -34,7 +34,7 @@ export default function ACMRecruitmentPage() {
     <div className="min-h-screen bg-gradient-to-br from-[#8ECAE6]/20 to-[#219EBC]/20">
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b border-[#219EBC]/20 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
-        <div className="container flex h-14 sm:h-16 items-center justify-between px-3 sm:px-4 md:px-6">
+        <div className="container mx-auto flex h-14 sm:h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center space-x-2 sm:space-x-3">
             <img
               src="/images/acm-logo.png"
@@ -85,7 +85,7 @@ export default function ACMRecruitmentPage() {
 
         {/* Mobile Navigation Menu */}
         <div className={`lg:hidden border-t border-[#219EBC]/20 bg-white/95 backdrop-blur transition-all duration-300 ${mobileMenuOpen ? 'block' : 'hidden'}`}>
-          <nav className="container px-3 sm:px-4 py-4">
+          <nav className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex flex-col space-y-3">
               <a
                 href="#about"
@@ -136,7 +136,7 @@ export default function ACMRecruitmentPage() {
 
       {/* Hero Section */}
       <section className="w-full py-8 sm:py-12 md:py-16 lg:py-24 xl:py-32">
-        <div className="container px-3 sm:px-4 md:px-6">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center space-y-3 sm:space-y-4 text-center">
             <Badge variant="secondary" className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium">
               <Calendar className="mr-1.5 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
@@ -168,7 +168,7 @@ export default function ACMRecruitmentPage() {
 
       {/* About & Selection Process */}
       <section id="about" className="w-full py-8 sm:py-12 md:py-16 lg:py-24 xl:py-32 bg-white">
-        <div className="container px-3 sm:px-4 md:px-6">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center space-y-3 sm:space-y-4 text-center mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter px-2">Selection Process</h2>
             <p className="mx-auto max-w-[90%] sm:max-w-[700px] text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 leading-relaxed px-2">
@@ -245,7 +245,7 @@ export default function ACMRecruitmentPage() {
 
       {/* Domain Tasks */}
       <section id="domains" className="w-full py-8 sm:py-12 md:py-16 lg:py-24 xl:py-32 bg-gradient-to-br from-blue-50 to-indigo-50">
-        <div className="container px-3 sm:px-4 md:px-6">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center space-y-3 sm:space-y-4 text-center mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter px-2">Choose Your Domain</h2>
             <p className="mx-auto max-w-[90%] sm:max-w-[700px] text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 leading-relaxed px-2">
@@ -757,7 +757,7 @@ export default function ACMRecruitmentPage() {
 
       {/* Call to Action - Submit Your Project */}
       <section className="w-full py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-r from-[#219EBC] via-[#023047] to-[#219EBC]">
-        <div className="container px-3 sm:px-4 md:px-6">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center text-white">
             <div className="mb-6 sm:mb-8">
               <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
@@ -809,7 +809,7 @@ export default function ACMRecruitmentPage() {
 
       {/* Submission Guidelines */}
       <section id="submission" className="w-full py-8 sm:py-12 md:py-16 lg:py-24 xl:py-32 bg-white">
-        <div className="container px-3 sm:px-4 md:px-6">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center space-y-3 sm:space-y-4 text-center mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter px-2">Submission Guidelines</h2>
             <p className="mx-auto max-w-[90%] sm:max-w-[700px] text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 leading-relaxed px-2">
@@ -898,7 +898,7 @@ export default function ACMRecruitmentPage() {
 
       {/* Evaluation Criteria */}
       <section id="evaluation" className="w-full py-8 sm:py-12 md:py-16 lg:py-24 xl:py-32 bg-gradient-to-br from-gray-50 to-slate-100">
-        <div className="container px-3 sm:px-4 md:px-6">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center space-y-3 sm:space-y-4 text-center mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter px-2">Evaluation Criteria</h2>
             <p className="mx-auto max-w-[90%] sm:max-w-[700px] text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 leading-relaxed px-2">
@@ -1022,7 +1022,7 @@ export default function ACMRecruitmentPage() {
 
       {/* Contact & Support */}
       <section id="contact" className="w-full py-8 sm:py-12 md:py-16 lg:py-24 xl:py-32 bg-white">
-        <div className="container px-3 sm:px-4 md:px-6">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center space-y-3 sm:space-y-4 text-center mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter px-2">Need Help?</h2>
             <p className="mx-auto max-w-[90%] sm:max-w-[700px] text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 leading-relaxed px-2">
@@ -1095,7 +1095,7 @@ export default function ACMRecruitmentPage() {
 
       {/* Footer */}
       <footer className="w-full py-4 sm:py-6 bg-gray-900 text-white">
-        <div className="container px-3 sm:px-4 md:px-6">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row items-center justify-between space-y-3 sm:space-y-0">
             <div className="flex items-center space-x-2 sm:space-x-3">
               <img

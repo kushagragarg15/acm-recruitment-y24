@@ -145,7 +145,7 @@ export default function SubmissionPage() {
     <div className="min-h-screen bg-gradient-to-br from-[#8ECAE6]/20 to-[#219EBC]/20">
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b border-[#219EBC]/20 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
-        <div className="container flex h-14 sm:h-16 items-center justify-between px-3 sm:px-4 md:px-6">
+        <div className="container mx-auto flex h-14 sm:h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center space-x-2 sm:space-x-3">
             <img
               src="/images/acm-logo.png"
@@ -167,7 +167,7 @@ export default function SubmissionPage() {
         </div>
       </header>
 
-      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 md:py-12">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12">
         <div className="max-w-4xl mx-auto">
           {/* Header Section */}
           <div className="text-center mb-6 sm:mb-8">

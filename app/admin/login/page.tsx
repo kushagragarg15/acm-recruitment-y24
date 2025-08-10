@@ -21,16 +21,27 @@ export default function AdminLogin() {
     setLoading(true)
     setError("")
 
-    // Simple authentication - in production, this should be server-side
-    if (credentials.username === "acm-admin" && credentials.password === "kushagragarg") {
-      // Set authentication in localStorage
-      localStorage.setItem("acm-admin-auth", "true")
-      localStorage.setItem("acm-admin-timestamp", Date.now().toString())
-      router.push("/admin")
-    } else {
-      setError("Invalid username or password")
+    try {
+      const response = await fetch("/api/admin/auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        router.push("/admin")
+      } else {
+        setError(result.error || "Invalid username or password")
+      }
+    } catch (error) {
+      setError("Network error. Please try again.")
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   return (

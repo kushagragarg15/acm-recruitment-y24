@@ -54,31 +54,32 @@ export default function AdminPage() {
     filterSubmissions()
   }, [submissions, searchTerm, domainFilter])
 
-  const checkAuthentication = () => {
-    const isAuth = localStorage.getItem("acm-admin-auth")
-    const timestamp = localStorage.getItem("acm-admin-timestamp")
-    
-    if (isAuth === "true" && timestamp) {
-      // Check if session is still valid (24 hours)
-      const sessionAge = Date.now() - parseInt(timestamp)
-      const maxAge = 24 * 60 * 60 * 1000 // 24 hours
+  const checkAuthentication = async () => {
+    try {
+      const response = await fetch("/api/admin/auth", {
+        method: "GET",
+      })
       
-      if (sessionAge < maxAge) {
+      const result = await response.json()
+      
+      if (result.authenticated) {
         setIsAuthenticated(true)
       } else {
-        // Session expired
-        localStorage.removeItem("acm-admin-auth")
-        localStorage.removeItem("acm-admin-timestamp")
         router.push("/admin/login")
       }
-    } else {
+    } catch (error) {
       router.push("/admin/login")
     }
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem("acm-admin-auth")
-    localStorage.removeItem("acm-admin-timestamp")
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/admin/auth", {
+        method: "DELETE",
+      })
+    } catch (error) {
+      // Continue with logout even if API call fails
+    }
     router.push("/admin/login")
   }
 

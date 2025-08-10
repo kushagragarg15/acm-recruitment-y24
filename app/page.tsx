@@ -1033,15 +1033,15 @@ export default function ACMRecruitmentPage() {
           </div>
 
           <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-6 max-w-7xl mx-auto">
-            <Card className="text-center">
-              <CardHeader className="pb-4 sm:pb-6">
+            <Card className="text-center flex flex-col h-full">
+              <CardHeader className="pb-4 sm:pb-6 flex-shrink-0">
                 <WhatsAppIcon className="h-10 w-10 sm:h-12 sm:w-12 text-green-600 mx-auto mb-3 sm:mb-4" />
                 <CardTitle className="text-base sm:text-lg">WhatsApp Support Group</CardTitle>
                 <CardDescription className="text-sm leading-relaxed">
                   Join our dedicated support group for real-time assistance and updates.
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex-grow flex flex-col justify-end">
                 <Button className="w-full bg-green-600 hover:bg-green-700 text-sm h-9 sm:h-10" asChild>
                   <Link href="https://chat.whatsapp.com/JkfUZ92dY4m3PAa2BvRH9k" target="_blank" rel="noopener noreferrer">
                     Join WhatsApp Group <ExternalLink className="ml-1.5 sm:ml-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
@@ -1050,15 +1050,15 @@ export default function ACMRecruitmentPage() {
               </CardContent>
             </Card>
 
-            <Card className="text-center">
-              <CardHeader className="pb-4 sm:pb-6">
+            <Card className="text-center flex flex-col h-full">
+              <CardHeader className="pb-4 sm:pb-6 flex-shrink-0">
                 <Users className="h-10 w-10 sm:h-12 sm:w-12 text-blue-600 mx-auto mb-3 sm:mb-4" />
                 <CardTitle className="text-base sm:text-lg">Direct Contact</CardTitle>
                 <CardDescription className="text-sm leading-relaxed">
                   Reach out to our recruitment team directly for personalized assistance.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-2 sm:space-y-3">
+              <CardContent className="flex-grow flex flex-col justify-center space-y-2 sm:space-y-3">
                 <div className="text-xs sm:text-sm">
                   <p className="font-medium">Email:</p>
                   <p className="text-blue-600 break-all">lnmiit.acm@gmail.com</p>
@@ -1070,15 +1070,15 @@ export default function ACMRecruitmentPage() {
               </CardContent>
             </Card>
 
-            <Card className="text-center">
-              <CardHeader className="pb-4 sm:pb-6">
+            <Card className="text-center flex flex-col h-full">
+              <CardHeader className="pb-4 sm:pb-6 flex-shrink-0">
                 <LinkedInIcon className="h-10 w-10 sm:h-12 sm:w-12 text-blue-700 mx-auto mb-3 sm:mb-4" />
                 <CardTitle className="text-base sm:text-lg">Follow Us on LinkedIn</CardTitle>
                 <CardDescription className="text-sm leading-relaxed">
                   Connect with us professionally and stay updated with career opportunities.
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex-grow flex flex-col justify-end">
                 <Button className="w-full bg-blue-700 hover:bg-blue-800 text-sm h-9 sm:h-10" asChild>
                   <Link href="https://www.linkedin.com/company/acmlnmiit/posts/?feedView=all" target="_blank" rel="noopener noreferrer">
                     Follow on LinkedIn <ExternalLink className="ml-1.5 sm:ml-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
@@ -1087,8 +1087,8 @@ export default function ACMRecruitmentPage() {
               </CardContent>
             </Card>
 
-            <Card className="text-center">
-              <CardHeader className="pb-4 sm:pb-6">
+            <Card className="text-center flex flex-col h-full">
+              <CardHeader className="pb-4 sm:pb-6 flex-shrink-0">
                 <svg className="h-10 w-10 sm:h-12 sm:w-12 text-pink-600 mx-auto mb-3 sm:mb-4" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                 </svg>
@@ -1097,7 +1097,7 @@ export default function ACMRecruitmentPage() {
                   Stay updated with our latest activities and announcements.
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex-grow flex flex-col justify-end">
                 <Button className="w-full bg-pink-600 hover:bg-pink-700 text-sm h-9 sm:h-10" asChild>
                   <Link href="https://www.instagram.com/acmlnmiit/" target="_blank" rel="noopener noreferrer">
                     Follow on Instagram <ExternalLink className="ml-1.5 sm:ml-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />

@@ -25,6 +25,7 @@ import {
   X,
 } from "lucide-react"
 import Link from "next/link"
+import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon"
 
 export default function ACMRecruitmentPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -1033,7 +1034,7 @@ export default function ACMRecruitmentPage() {
           <div className="grid gap-6 sm:gap-8 lg:grid-cols-3 lg:gap-8 max-w-6xl mx-auto">
             <Card className="text-center">
               <CardHeader className="pb-4 sm:pb-6">
-                <MessageCircle className="h-10 w-10 sm:h-12 sm:w-12 text-green-600 mx-auto mb-3 sm:mb-4" />
+                <WhatsAppIcon className="h-10 w-10 sm:h-12 sm:w-12 text-green-600 mx-auto mb-3 sm:mb-4" />
                 <CardTitle className="text-base sm:text-lg">WhatsApp Support Group</CardTitle>
                 <CardDescription className="text-sm leading-relaxed">
                   Join our dedicated support group for real-time assistance and updates.

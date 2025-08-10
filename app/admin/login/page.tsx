@@ -22,7 +22,7 @@ export default function AdminLogin() {
     setError("")
 
     // Simple authentication - in production, this should be server-side
-    if (credentials.username === "acm-admin" && credentials.password === "acm2024@lnmiit") {
+    if (credentials.username === "acm-admin" && credentials.password === "kushagragarg") {
       // Set authentication in localStorage
       localStorage.setItem("acm-admin-auth", "true")
       localStorage.setItem("acm-admin-timestamp", Date.now().toString())

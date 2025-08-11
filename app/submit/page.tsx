@@ -229,7 +229,7 @@ export default function SubmissionPage() {
               used for evaluation and communication.
             </p>
             <div className="mt-3 sm:mt-4 p-2.5 sm:p-3 bg-[#FFB703]/20 border border-[#FFB703]/50 rounded-lg inline-block mx-2">
-              <p className="text-xs sm:text-sm text-[#023047] font-medium">⏰ Deadline: August 20th, 11:59 PM IST</p>
+              <p className="text-xs sm:text-sm text-[#023047] font-medium">⏰ Deadline: August 18th, 11:59 PM IST</p>
             </div>
           </div>
 

@@ -41,7 +41,7 @@ const taskOptions = {
   "web-development": ["Option 1: MNTN Landing Page", "Option 2: College Achievement Portal"],
   "ai-ml": ["Task 1: Video Game Sales Prediction", "Task 2: Spotify Song Popularity Prediction"],
   "generative-ai": ["AI Content Creation Assistant"],
-  "creative-domain": ["Option 1: ACM Newsletter Design", "Option 2: ACM T-shirt Design"],
+  "creative-domain": ["Option 1: ACM Newsletter Design", "Option 2: ACM T-shirt Design", "Option 3: Video Editing Portfolio"],
   "competitive-programming": ["Contest-Based Evaluation"],
 }
 
@@ -182,6 +182,9 @@ export default function SubmissionPage() {
     if (formData.domain === "competitive-programming") {
       // For CP, at least one profile is required
       return basicFieldsValid && (formData.codeforces_profile || formData.leetcode_profile)
+    } else if (formData.domain === "creative-domain" && formData.task_option === "Option 3: Video Editing Portfolio") {
+      // For video editing portfolio, project title and project link are required
+      return basicFieldsValid && formData.project_title && formData.project_link
     } else {
       // For other domains, project title is required
       return basicFieldsValid && formData.project_title
@@ -467,12 +470,23 @@ export default function SubmissionPage() {
                   <div className="space-y-2">
                     <Label htmlFor="project_title" className="flex items-center space-x-1">
                       <FileText className="h-4 w-4" />
-                      <span>{formData.domain === "creative-domain" ? "Design Title *" : "Project Title *"}</span>
+                      <span>
+                        {formData.domain === "creative-domain" 
+                          ? (formData.task_option === "Option 3: Video Editing Portfolio" ? "Portfolio Title *" : "Design Title *")
+                          : "Project Title *"
+                        }
+                      </span>
                     </Label>
                     <Input
                       id="project_title"
                       type="text"
-                      placeholder={formData.domain === "creative-domain" ? "Enter your design title" : "Enter your project title"}
+                      placeholder={
+                        formData.domain === "creative-domain" 
+                          ? (formData.task_option === "Option 3: Video Editing Portfolio" 
+                              ? "e.g., My Video Editing Portfolio 2024" 
+                              : "Enter your design title")
+                          : "Enter your project title"
+                      }
                       value={formData.project_title}
                       onChange={(e) => handleInputChange("project_title", e.target.value)}
                       required
@@ -481,13 +495,20 @@ export default function SubmissionPage() {
 
                   <div className="space-y-2">
                     <Label htmlFor="project_description">
-                      {formData.domain === "creative-domain" ? "Design Description" : "Project Description"}
+                      {formData.domain === "creative-domain" 
+                        ? (formData.task_option === "Option 3: Video Editing Portfolio" 
+                            ? "Portfolio Overview" 
+                            : "Design Description")
+                        : "Project Description"
+                      }
                     </Label>
                     <Textarea
                       id="project_description"
                       placeholder={
                         formData.domain === "creative-domain" 
-                          ? "Describe your design concept, inspiration, and creative approach..."
+                          ? (formData.task_option === "Option 3: Video Editing Portfolio"
+                              ? "Describe your video editing experience, types of videos you've created, and your creative style..."
+                              : "Describe your design concept, inspiration, and creative approach...")
                           : "Briefly describe your project, its features, and what makes it unique..."
                       }
                       value={formData.project_description}
@@ -504,30 +525,60 @@ export default function SubmissionPage() {
                           <strong>Creative Domain Guidelines:</strong> Share your design files through cloud storage or portfolio platforms. 
                           GitHub repository is not required for creative submissions.
                         </p>
+                        {formData.task_option === "Option 3: Video Editing Portfolio" && (
+                          <div className="mt-3 p-3 bg-[#FFB703]/10 border border-[#FFB703]/30 rounded-lg">
+                            <p className="text-sm text-[#023047]">
+                              <strong>📹 Video Editing Portfolio:</strong> For video editors, we only require your past work portfolio. 
+                              Share links to your previous video projects (YouTube, Vimeo, Google Drive, etc.). 
+                              Selection will be based solely on your portfolio quality and creativity.
+                            </p>
+                          </div>
+                        )}
                       </div>
 
                       <div className="space-y-2">
                         <Label htmlFor="project_link" className="flex items-center space-x-1">
                           <LinkIcon className="h-4 w-4" />
-                          <span>Design Files/Portfolio Link</span>
+                          <span>
+                            {formData.task_option === "Option 3: Video Editing Portfolio" 
+                              ? "Video Portfolio Link *" 
+                              : "Design Files/Portfolio Link"
+                            }
+                          </span>
                         </Label>
                         <Input
                           id="project_link"
                           type="url"
-                          placeholder="https://drive.google.com/... or https://behance.net/..."
+                          placeholder={
+                            formData.task_option === "Option 3: Video Editing Portfolio"
+                              ? "https://youtube.com/playlist?list=... or https://vimeo.com/..."
+                              : "https://drive.google.com/... or https://behance.net/..."
+                          }
                           value={formData.project_link}
                           onChange={(e) => handleInputChange("project_link", e.target.value)}
                         />
                         <p className="text-xs text-gray-500">
-                          Share your design files via Google Drive, Behance, Dribbble, or similar platforms
+                          {formData.task_option === "Option 3: Video Editing Portfolio"
+                            ? "Share your video portfolio via YouTube playlist, Vimeo showcase, or Google Drive folder"
+                            : "Share your design files via Google Drive, Behance, Dribbble, or similar platforms"
+                          }
                         </p>
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="additional_links">Additional Creative Links</Label>
+                        <Label htmlFor="additional_links">
+                          {formData.task_option === "Option 3: Video Editing Portfolio" 
+                            ? "Additional Video Work & Social Media" 
+                            : "Additional Creative Links"
+                          }
+                        </Label>
                         <Textarea
                           id="additional_links"
-                          placeholder="Portfolio website, Instagram, other design work links - one per line"
+                          placeholder={
+                            formData.task_option === "Option 3: Video Editing Portfolio"
+                              ? "YouTube channel, Instagram reels, TikTok, other video platforms - one per line"
+                              : "Portfolio website, Instagram, other design work links - one per line"
+                          }
                           value={formData.additional_links}
                           onChange={(e) => handleInputChange("additional_links", e.target.value)}
                           rows={3}
@@ -586,7 +637,12 @@ export default function SubmissionPage() {
                 {formData.domain !== "competitive-programming" && (
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
-                      {formData.domain === "creative-domain" ? "Creative Process" : "Technical Details"}
+                      {formData.domain === "creative-domain" 
+                        ? (formData.task_option === "Option 3: Video Editing Portfolio" 
+                            ? "Video Editing Experience" 
+                            : "Creative Process")
+                        : "Technical Details"
+                      }
                     </h3>
 
                   <div className="space-y-2">
@@ -597,7 +653,9 @@ export default function SubmissionPage() {
                       id="technologies_used"
                       placeholder={
                         formData.domain === "creative-domain"
-                          ? "List the design tools and software you used (e.g., Figma, Photoshop, Illustrator, Canva, etc.)..."
+                          ? (formData.task_option === "Option 3: Video Editing Portfolio"
+                              ? "List video editing software and tools you use (e.g., Adobe Premiere Pro, After Effects, DaVinci Resolve, Final Cut Pro, etc.)..."
+                              : "List the design tools and software you used (e.g., Figma, Photoshop, Illustrator, Canva, etc.)...")
                           : "List the technologies, frameworks, libraries, and tools you used..."
                       }
                       value={formData.technologies_used}
@@ -614,7 +672,9 @@ export default function SubmissionPage() {
                       id="challenges_faced"
                       placeholder={
                         formData.domain === "creative-domain"
-                          ? "Describe any creative challenges you faced and how you solved them..."
+                          ? (formData.task_option === "Option 3: Video Editing Portfolio"
+                              ? "Describe any video editing challenges you've faced and how you solved them..."
+                              : "Describe any creative challenges you faced and how you solved them...")
                           : "Describe any challenges you encountered and how you overcame them..."
                       }
                       value={formData.challenges_faced}
@@ -631,7 +691,9 @@ export default function SubmissionPage() {
                       id="learning_outcomes"
                       placeholder={
                         formData.domain === "creative-domain"
-                          ? "What did you learn from this creative process? What design skills did you develop or improve?"
+                          ? (formData.task_option === "Option 3: Video Editing Portfolio"
+                              ? "What video editing skills have you developed? What types of videos do you enjoy creating most?"
+                              : "What did you learn from this creative process? What design skills did you develop or improve?")
                           : "What did you learn from this project? What skills did you develop?"
                       }
                       value={formData.learning_outcomes}
@@ -656,7 +718,9 @@ export default function SubmissionPage() {
                       placeholder={
                         formData.domain === "competitive-programming" 
                           ? "Any additional information about your competitive programming journey, achievements, or goals..."
-                          : "Any additional information you'd like to share about your project or yourself..."
+                          : (formData.domain === "creative-domain" && formData.task_option === "Option 3: Video Editing Portfolio"
+                              ? "Tell us about your video editing journey, favorite projects, or any achievements in video creation..."
+                              : "Any additional information you'd like to share about your project or yourself...")
                       }
                       value={formData.additional_comments}
                       onChange={(e) => handleInputChange("additional_comments", e.target.value)}

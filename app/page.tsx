@@ -611,81 +611,127 @@ export default function ACMRecruitmentPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4 sm:space-y-6">
-                <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
+                <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
                   {/* Option 1: ACM Newsletter Design */}
-                  <div className="p-6 bg-orange-50 rounded-lg border border-orange-200">
-                    <h4 className="font-bold text-lg mb-3 text-orange-800">Option 1: ACM Newsletter Design</h4>
-                    <p className="text-sm text-gray-700 mb-4">
+                  <div className="p-4 sm:p-6 bg-orange-50 rounded-lg border border-orange-200">
+                    <h4 className="font-bold text-base sm:text-lg mb-2 sm:mb-3 text-orange-800">Option 1: ACM Newsletter Design</h4>
+                    <p className="text-xs sm:text-sm text-gray-700 mb-3 sm:mb-4 leading-relaxed">
                       Design a professional monthly newsletter for ACM Student Chapter.
                     </p>
 
-                    <div className="space-y-3">
-                      <h5 className="font-semibold text-sm text-orange-700">Requirements:</h5>
-                      <ul className="text-xs space-y-1 text-gray-600">
-                        <li className="flex items-start space-x-2">
-                          <CheckCircle className="h-3 w-3 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span>
+                    <div className="space-y-2 sm:space-y-3">
+                      <h5 className="font-semibold text-xs sm:text-sm text-orange-700">Requirements:</h5>
+                      <ul className="text-[10px] sm:text-xs space-y-1 text-gray-600">
+                        <li className="flex items-start space-x-1.5 sm:space-x-2">
+                          <CheckCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span className="leading-relaxed">
                             Include sections: upcoming events, technical articles, member spotlights, resources
                           </span>
                         </li>
-                        <li className="flex items-start space-x-2">
-                          <CheckCircle className="h-3 w-3 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span>Reflect ACM branding (colors, logo, typography)</span>
+                        <li className="flex items-start space-x-1.5 sm:space-x-2">
+                          <CheckCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span className="leading-relaxed">Reflect ACM branding (colors, logo, typography)</span>
                         </li>
-                        <li className="flex items-start space-x-2">
-                          <CheckCircle className="h-3 w-3 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span>Provide both print and digital-ready versions</span>
+                        <li className="flex items-start space-x-1.5 sm:space-x-2">
+                          <CheckCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span className="leading-relaxed">Provide both print and digital-ready versions</span>
                         </li>
                       </ul>
                     </div>
 
-                    <div className="mt-4 p-3 bg-white rounded border">
-                      <p className="text-xs font-medium text-orange-700 mb-1">Submission:</p>
-                      <p className="text-xs text-gray-600">PDF designs + source files (PSD, AI, Figma)</p>
+                    <div className="mt-3 sm:mt-4 p-2.5 sm:p-3 bg-white rounded border">
+                      <p className="text-[10px] sm:text-xs font-medium text-orange-700 mb-1">Submission:</p>
+                      <p className="text-[10px] sm:text-xs text-gray-600">PDF designs + source files (PSD, AI, Figma)</p>
                     </div>
                   </div>
 
                   {/* Option 2: ACM T-shirt Design */}
-                  <div className="p-6 bg-orange-50 rounded-lg border border-orange-200">
-                    <h4 className="font-bold text-lg mb-3 text-orange-800">Option 2: ACM T-shirt Design</h4>
-                    <p className="text-sm text-gray-700 mb-4">Create an original t-shirt design for ACM members.</p>
+                  <div className="p-4 sm:p-6 bg-orange-50 rounded-lg border border-orange-200">
+                    <h4 className="font-bold text-base sm:text-lg mb-2 sm:mb-3 text-orange-800">Option 2: ACM T-shirt Design</h4>
+                    <p className="text-xs sm:text-sm text-gray-700 mb-3 sm:mb-4 leading-relaxed">Create an original t-shirt design for ACM members.</p>
 
-                    <div className="space-y-3">
-                      <h5 className="font-semibold text-sm text-orange-700">Requirements:</h5>
-                      <ul className="text-xs space-y-1 text-gray-600">
-                        <li className="flex items-start space-x-2">
-                          <CheckCircle className="h-3 w-3 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span>Professional design that members would proudly wear</span>
+                    <div className="space-y-2 sm:space-y-3">
+                      <h5 className="font-semibold text-xs sm:text-sm text-orange-700">Requirements:</h5>
+                      <ul className="text-[10px] sm:text-xs space-y-1 text-gray-600">
+                        <li className="flex items-start space-x-1.5 sm:space-x-2">
+                          <CheckCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span className="leading-relaxed">Professional design that members would proudly wear</span>
                         </li>
-                        <li className="flex items-start space-x-2">
-                          <CheckCircle className="h-3 w-3 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span>Incorporate ACM branding and LNMIIT identity</span>
+                        <li className="flex items-start space-x-1.5 sm:space-x-2">
+                          <CheckCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span className="leading-relaxed">Incorporate ACM branding and LNMIIT identity</span>
                         </li>
-                        <li className="flex items-start space-x-2">
-                          <CheckCircle className="h-3 w-3 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span>Design both front and back</span>
+                        <li className="flex items-start space-x-1.5 sm:space-x-2">
+                          <CheckCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span className="leading-relaxed">Design both front and back</span>
                         </li>
-                        <li className="flex items-start space-x-2">
-                          <CheckCircle className="h-3 w-3 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span>Suitable for screen printing</span>
+                        <li className="flex items-start space-x-1.5 sm:space-x-2">
+                          <CheckCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span className="leading-relaxed">Suitable for screen printing</span>
                         </li>
                       </ul>
                     </div>
 
-                    <div className="mt-4 p-3 bg-white rounded border">
-                      <p className="text-xs font-medium text-orange-700 mb-1">Submission:</p>
-                      <p className="text-xs text-gray-600">High-resolution images + source files</p>
+                    <div className="mt-3 sm:mt-4 p-2.5 sm:p-3 bg-white rounded border">
+                      <p className="text-[10px] sm:text-xs font-medium text-orange-700 mb-1">Submission:</p>
+                      <p className="text-[10px] sm:text-xs text-gray-600">High-resolution images + source files</p>
+                    </div>
+                  </div>
+
+                  {/* Option 3: Video Editing Portfolio */}
+                  <div className="p-4 sm:p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+                    <h4 className="font-bold text-base sm:text-lg mb-2 sm:mb-3 text-purple-800">Option 3: Video Editing Portfolio</h4>
+                    <p className="text-xs sm:text-sm text-gray-700 mb-3 sm:mb-4 leading-relaxed">
+                      Showcase your video editing skills through your past work portfolio.
+                    </p>
+
+                    <div className="space-y-2 sm:space-y-3">
+                      <div className="p-2.5 sm:p-3 bg-gradient-to-r from-yellow-100 to-orange-100 rounded border border-yellow-300">
+                        <p className="text-[10px] sm:text-xs font-bold text-orange-800 mb-1">📹 Portfolio-Only Evaluation</p>
+                        <p className="text-[10px] sm:text-xs text-orange-700 leading-relaxed">
+                          Selection based solely on your existing video work quality and creativity. No new project required!
+                        </p>
+                      </div>
+
+                      <h5 className="font-semibold text-xs sm:text-sm text-purple-700">Requirements:</h5>
+                      <ul className="text-[10px] sm:text-xs space-y-1 text-gray-600">
+                        <li className="flex items-start space-x-1.5 sm:space-x-2">
+                          <CheckCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span className="leading-relaxed">Submit links to your best video editing work</span>
+                        </li>
+                        <li className="flex items-start space-x-1.5 sm:space-x-2">
+                          <CheckCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span className="leading-relaxed">Include variety: promotional, educational, creative content</span>
+                        </li>
+                        <li className="flex items-start space-x-1.5 sm:space-x-2">
+                          <CheckCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span className="leading-relaxed">Demonstrate technical skills and creative vision</span>
+                        </li>
+                        <li className="flex items-start space-x-1.5 sm:space-x-2">
+                          <CheckCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span className="leading-relaxed">Brief description of your editing experience</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="mt-3 sm:mt-4 p-2.5 sm:p-3 bg-white rounded border">
+                      <p className="text-[10px] sm:text-xs font-medium text-purple-700 mb-1">Submission Platforms:</p>
+                      <p className="text-[10px] sm:text-xs text-gray-600">YouTube, Vimeo, Instagram, Google Drive, or portfolio website</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">Adobe Creative Suite</Badge>
-                  <Badge variant="secondary">Figma</Badge>
-                  <Badge variant="secondary">Illustrator</Badge>
-                  <Badge variant="secondary">Photoshop</Badge>
-                  <Badge variant="secondary">InDesign</Badge>
-                  <Badge variant="secondary">Branding</Badge>
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                  <Badge variant="secondary" className="text-xs px-2 py-1">Adobe Creative Suite</Badge>
+                  <Badge variant="secondary" className="text-xs px-2 py-1">Figma</Badge>
+                  <Badge variant="secondary" className="text-xs px-2 py-1">Illustrator</Badge>
+                  <Badge variant="secondary" className="text-xs px-2 py-1">Photoshop</Badge>
+                  <Badge variant="secondary" className="text-xs px-2 py-1">InDesign</Badge>
+                  <Badge variant="secondary" className="text-xs px-2 py-1">Premiere Pro</Badge>
+                  <Badge variant="secondary" className="text-xs px-2 py-1">After Effects</Badge>
+                  <Badge variant="secondary" className="text-xs px-2 py-1">DaVinci Resolve</Badge>
+                  <Badge variant="secondary" className="text-xs px-2 py-1">Video Editing</Badge>
+                  <Badge variant="secondary" className="text-xs px-2 py-1">Branding</Badge>
                 </div>
               </CardContent>
             </Card>

@@ -846,7 +846,7 @@ export default function ACMRecruitmentPage() {
                 <div className="text-sm sm:text-base opacity-90">Domain Options</div>
               </div>
               <div className="bg-white/10 backdrop-blur rounded-lg p-4 sm:p-6">
-                <div className="text-2xl sm:text-3xl font-bold mb-2">Aug 18</div>
+                <div className="text-2xl sm:text-3xl font-bold mb-2">Aug 19</div>
                 <div className="text-sm sm:text-base opacity-90">Submission Deadline</div>
               </div>
               <div className="bg-white/10 backdrop-blur rounded-lg p-4 sm:p-6">
@@ -878,7 +878,7 @@ export default function ACMRecruitmentPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-center p-4 sm:p-6 bg-white rounded-lg border-2 border-red-200">
-                  <div className="text-2xl sm:text-3xl font-bold text-red-600 mb-2">August 18th</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-red-600 mb-2">August 19th</div>
                   <div className="text-base sm:text-lg font-semibold text-red-700 mb-1">11:59 PM IST</div>
                   <div className="text-xs sm:text-sm text-gray-600">Final submission deadline</div>
                 </div>

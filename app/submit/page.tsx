@@ -197,11 +197,18 @@ export default function SubmissionPage() {
       <header className="sticky top-0 z-50 w-full border-b border-[#219EBC]/20 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
         <div className="container mx-auto flex h-14 sm:h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center space-x-2 sm:space-x-3">
-            <img
-              src="/images/acm-logo.png"
-              alt="ACM LNMIIT Logo"
-              className="h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10 lg:h-12 lg:w-12 object-contain"
-            />
+            <div className="flex items-center space-x-2">
+              <img
+                src="/images/acm-logo.png"
+                alt="ACM Logo"
+                className="h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10 lg:h-12 lg:w-12 object-contain"
+              />
+              <img
+                src="https://lnmiit.ac.in/wp-content/uploads/2023/07/LNMIIT-Logo-Transperant-Background.png"
+                alt="LNMIIT Logo"
+                className="h-8 w-auto sm:h-10 sm:w-auto md:h-12 md:w-auto lg:h-14 lg:w-auto object-contain"
+              />
+            </div>
             <div className="flex flex-col">
               <span className="font-bold text-xs sm:text-sm md:text-base lg:text-lg text-[#023047]">ACM LNMIIT</span>
               <span className="font-medium text-[10px] sm:text-xs md:text-sm text-[#023047]/70">Submission Portal</span>

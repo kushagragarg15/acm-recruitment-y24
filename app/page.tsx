@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -31,6 +31,11 @@ import { RotatingFactsBar } from "@/components/RotatingFactsBar"
 
 export default function ACMRecruitmentPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#8ECAE6]/20 to-[#219EBC]/20">
@@ -74,6 +79,15 @@ export default function ACMRecruitmentPage() {
             <a href="/admin/login" className="transition-colors hover:text-[#219EBC] text-[#023047] border border-[#219EBC]/30 px-3 py-1 rounded-md hover:bg-[#219EBC]/10">
               Admin
             </a>
+            {isClient && (
+              <button 
+                onClick={() => window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=RDdQw4w9WgXcQ&start_radio=1&rv=pCs7KuQuGkc', '_blank')}
+                className="transition-colors hover:text-[#219EBC] text-[#023047] border border-[#FFB703]/30 px-3 py-1 rounded-md hover:bg-[#FFB703]/10 font-medium"
+                title="🎵 Surprise!"
+              >
+                🎶 Vibes
+              </button>
+            )}
           </nav>
           {/* Mobile menu button */}
           <div className="lg:hidden">
@@ -138,6 +152,18 @@ export default function ACMRecruitmentPage() {
               >
                 Admin
               </a>
+              {isClient && (
+                <button
+                  onClick={() => {
+                    window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=RDdQw4w9WgXcQ&start_radio=1&rv=pCs7KuQuGkc', '_blank');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="text-sm font-medium transition-colors hover:text-[#219EBC] text-[#023047] py-2 border border-[#FFB703]/30 px-3 rounded-md hover:bg-[#FFB703]/10 text-left"
+                  title="🎵 Surprise!"
+                >
+                  🎶 Vibes
+                </button>
+              )}
             </div>
           </nav>
         </div>

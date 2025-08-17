@@ -64,9 +64,9 @@ export default function AdminPage() {
       const response = await fetch("/api/admin/auth", {
         method: "GET",
       })
-      
+
       const result = await response.json()
-      
+
       if (result.authenticated) {
         setIsAuthenticated(true)
       } else {
@@ -128,7 +128,7 @@ export default function AdminPage() {
     // Dynamic headers based on domain
     const baseHeaders = [
       "Name",
-      "Roll Number", 
+      "Roll Number",
       "Email",
       "Phone",
       "Domain",
@@ -139,7 +139,7 @@ export default function AdminPage() {
     // Add domain-specific headers
     const domainSpecificHeaders = []
     const hasCP = filteredSubmissions.some(sub => sub.domain === "competitive-programming")
-    const hasTechnical = filteredSubmissions.some(sub => 
+    const hasTechnical = filteredSubmissions.some(sub =>
       sub.domain !== "competitive-programming" && (sub.project_title || sub.github_link)
     )
 
@@ -165,7 +165,7 @@ export default function AdminPage() {
       ]
 
       const domainSpecificData = []
-      
+
       if (hasTechnical) {
         if (sub.domain === "competitive-programming") {
           domainSpecificData.push("", "", "", "") // Empty for CP submissions
@@ -238,9 +238,9 @@ export default function AdminPage() {
             <p className="text-sm sm:text-base text-[#023047]/80">Manage and review student submissions for Y24 batch recruitment.</p>
           </div>
           <div className="mt-4 sm:mt-0">
-            <Button 
+            <Button
               onClick={handleLogout}
-              variant="outline" 
+              variant="outline"
               size="sm"
               className="border-[#219EBC] text-[#219EBC] hover:bg-[#219EBC] hover:text-white"
             >
@@ -358,7 +358,7 @@ export default function AdminPage() {
                   <div>
                     <span className="font-medium">Roll Number:</span> {submission.roll_number}
                   </div>
-                  
+
                   {/* Domain-specific display */}
                   {submission.domain === "competitive-programming" ? (
                     <div>
@@ -385,14 +385,14 @@ export default function AdminPage() {
                       </span>
                     </div>
                   )}
-                  
+
                   {submission.task_option && (
                     <div>
                       <span className="font-medium">Task:</span>
                       <span className="block sm:inline sm:ml-1 text-xs sm:text-sm">{submission.task_option}</span>
                     </div>
                   )}
-                  
+
                   {/* Domain-specific action buttons */}
                   <div className="flex flex-col sm:flex-row gap-2 mt-3">
                     {submission.domain === "competitive-programming" ? (
@@ -569,8 +569,8 @@ export default function AdminPage() {
                 )}
 
                 {/* Links section - only for non-CP domains */}
-                {selectedSubmission.domain !== "competitive-programming" && 
-                 (selectedSubmission.project_link || selectedSubmission.github_link || selectedSubmission.additional_links) && (
+                {selectedSubmission.domain !== "competitive-programming" &&
+                  (selectedSubmission.project_link || selectedSubmission.github_link || selectedSubmission.additional_links) && (
                     <div>
                       <h4 className="font-medium mb-2">
                         {selectedSubmission.domain === "creative-domain" ? "Design Files & Links" : "Project Links"}

@@ -33,7 +33,7 @@ html {
 }
         `}</style>
       </head>
-      <body>
+      <body suppressHydrationWarning={true}>
         {children}
         <Toaster 
           position="top-right"

@@ -44,7 +44,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const missingFields = requiredFields.filter((field) => !body[field]?.trim())
+    // Check for missing fields (excluding domains which we already validated)
+    const stringFields = ["name", "roll_number", "email", "phone"]
+    const missingFields = stringFields.filter((field) => !body[field]?.trim())
 
     if (missingFields.length > 0) {
       return NextResponse.json(

@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import {
   CheckCircle,
@@ -46,13 +47,15 @@ const taskOptions = {
 }
 
 export default function SubmissionPage() {
+  const [existingSubmissions, setExistingSubmissions] = useState<string[]>([])
+  const [checkingExisting, setCheckingExisting] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
     roll_number: "",
     email: "",
     phone: "",
-    domain: "",
-    task_option: "",
+    domains: [] as string[],
+    task_options: {} as Record<string, string>,
     project_title: "",
     project_description: "",
     project_link: "",
@@ -77,10 +80,58 @@ export default function SubmissionPage() {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
-    // Clear task option when domain changes
-    if (field === "domain") {
-      setFormData((prev) => ({ ...prev, task_option: "" }))
+    
+    // Check existing submissions when roll number is entered
+    if (field === "roll_number" && value.length >= 8) {
+      checkExistingSubmissions(value)
     }
+  }
+
+  const checkExistingSubmissions = async (rollNumber: string) => {
+    if (!rollNumber.trim()) return
+    
+    setCheckingExisting(true)
+    try {
+      const response = await fetch(`/api/submissions/check?roll_number=${rollNumber}`)
+      if (response.ok) {
+        const data = await response.json()
+        setExistingSubmissions(data.domains || [])
+      }
+    } catch (error) {
+      console.error("Error checking existing submissions:", error)
+    } finally {
+      setCheckingExisting(false)
+    }
+  }
+
+  const handleDomainChange = (domainValue: string, checked: boolean) => {
+    setFormData((prev) => {
+      const newDomains = checked 
+        ? [...prev.domains, domainValue]
+        : prev.domains.filter(d => d !== domainValue)
+      
+      // Clear task options for removed domains
+      const newTaskOptions = { ...prev.task_options }
+      if (!checked) {
+        delete newTaskOptions[domainValue]
+      }
+      
+      return {
+        ...prev,
+        domains: newDomains,
+        task_options: newTaskOptions
+      }
+    })
+  }
+
+  const handleTaskOptionChange = (domain: string, taskOption: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      task_options: {
+        ...prev.task_options,
+        [domain]: taskOption
+      }
+    }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -122,8 +173,8 @@ export default function SubmissionPage() {
           roll_number: "",
           email: "",
           phone: "",
-          domain: "",
-          task_option: "",
+          domains: [],
+          task_options: {},
           project_title: "",
           project_description: "",
           project_link: "",
@@ -177,18 +228,31 @@ export default function SubmissionPage() {
       formData.roll_number &&
       formData.email &&
       formData.phone &&
-      formData.domain
+      formData.domains.length > 0
 
-    if (formData.domain === "competitive-programming") {
-      // For CP, at least one profile is required
-      return basicFieldsValid && (formData.codeforces_profile || formData.leetcode_profile)
-    } else if (formData.domain === "creative-domain" && formData.task_option === "Option 3: Video Editing Portfolio") {
-      // For video editing portfolio, project title and project link are required
-      return basicFieldsValid && formData.project_title && formData.project_link
-    } else {
-      // For other domains, project title is required
-      return basicFieldsValid && formData.project_title
+    if (!basicFieldsValid) return false
+
+    // Check if competitive programming is selected and has required profiles
+    if (formData.domains.includes("competitive-programming")) {
+      if (!(formData.codeforces_profile || formData.leetcode_profile)) {
+        return false
+      }
     }
+
+    // Check if non-competitive domains have required project information
+    const nonCPDomains = formData.domains.filter(d => d !== "competitive-programming")
+    if (nonCPDomains.length > 0) {
+      if (!formData.project_title) return false
+      
+      // Check if creative domain with video editing portfolio has project link
+      if (formData.domains.includes("creative-domain") && 
+          formData.task_options["creative-domain"] === "Option 3: Video Editing Portfolio" &&
+          !formData.project_link) {
+        return false
+      }
+    }
+
+    return true
   }
 
   return (
@@ -346,52 +410,101 @@ export default function SubmissionPage() {
                 {/* Domain Selection */}
                 <div className="space-y-3 sm:space-y-4">
                   <h3 className="text-base sm:text-lg font-semibold text-gray-900 border-b pb-2">Domain & Task Selection</h3>
+                  
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-sm text-blue-700 font-medium mb-2">✨ New: Multiple Domain Submissions!</p>
+                    <p className="text-xs text-blue-600">
+                      You can now apply for multiple domains! Select all domains you're interested in and complete the respective tasks.
+                    </p>
+                  </div>
 
-                  <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
-                    <div className="space-y-1.5 sm:space-y-2">
-                      <Label htmlFor="domain" className="flex items-center space-x-1 text-sm">
-                        <Code className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                        <span>Domain *</span>
+                  <div className="space-y-4">
+                    <div className="space-y-3">
+                      <Label className="flex items-center space-x-1 text-sm font-medium">
+                        <Code className="h-4 w-4" />
+                        <span>Select Domains * (You can choose multiple)</span>
                       </Label>
-                      <Select value={formData.domain} onValueChange={(value) => handleInputChange("domain", value)}>
-                        <SelectTrigger className="text-sm sm:text-base">
-                          <SelectValue placeholder="Select your domain" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {domains.map((domain) => (
-                            <SelectItem key={domain.value} value={domain.value} className="text-sm">
-                              {domain.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      
+                      {existingSubmissions.length > 0 && (
+                        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                          <p className="text-sm text-blue-700 font-medium mb-1">
+                            📋 You have already submitted for: {existingSubmissions.map(domain => 
+                              domains.find(d => d.value === domain)?.label
+                            ).join(", ")}
+                          </p>
+                          <p className="text-xs text-blue-600">
+                            You can submit for additional domains below. Already submitted domains are disabled.
+                          </p>
+                        </div>
+                      )}
+                      
+                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        {domains.map((domain) => {
+                          const isAlreadySubmitted = existingSubmissions.includes(domain.value)
+                          return (
+                            <div key={domain.value} className={`flex items-center space-x-2 p-3 border rounded-lg ${
+                              isAlreadySubmitted 
+                                ? 'bg-gray-100 border-gray-300' 
+                                : 'hover:bg-gray-50'
+                            }`}>
+                              <Checkbox
+                                id={domain.value}
+                                checked={formData.domains.includes(domain.value)}
+                                onCheckedChange={(checked) => handleDomainChange(domain.value, checked as boolean)}
+                                disabled={isAlreadySubmitted}
+                              />
+                              <Label htmlFor={domain.value} className={`text-sm font-medium cursor-pointer flex-1 ${
+                                isAlreadySubmitted ? 'text-gray-500' : ''
+                              }`}>
+                                {domain.label}
+                                {isAlreadySubmitted && <span className="text-xs text-green-600 ml-2">✓ Submitted</span>}
+                              </Label>
+                            </div>
+                          )
+                        })}
+                      </div>
                     </div>
 
-                    {formData.domain && (
-                      <div className="space-y-1.5 sm:space-y-2">
-                        <Label htmlFor="task_option" className="text-sm">Task Option</Label>
-                        <Select
-                          value={formData.task_option}
-                          onValueChange={(value) => handleInputChange("task_option", value)}
-                        >
-                          <SelectTrigger className="text-sm sm:text-base">
-                            <SelectValue placeholder="Select task option" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {taskOptions[formData.domain as keyof typeof taskOptions]?.map((option) => (
-                              <SelectItem key={option} value={option} className="text-sm">
-                                {option}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                    {/* Task Options for Selected Domains */}
+                    {formData.domains.length > 0 && (
+                      <div className="space-y-4">
+                        <h4 className="text-sm font-semibold text-gray-900">Task Options for Selected Domains</h4>
+                        {formData.domains.map((selectedDomain) => {
+                          const domainLabel = domains.find(d => d.value === selectedDomain)?.label
+                          const options = taskOptions[selectedDomain as keyof typeof taskOptions]
+                          
+                          if (!options || options.length <= 1) return null
+                          
+                          return (
+                            <div key={selectedDomain} className="p-3 border rounded-lg bg-gray-50">
+                              <Label className="text-sm font-medium mb-2 block">
+                                {domainLabel} - Choose Task Option:
+                              </Label>
+                              <Select
+                                value={formData.task_options[selectedDomain] || ""}
+                                onValueChange={(value) => handleTaskOptionChange(selectedDomain, value)}
+                              >
+                                <SelectTrigger className="text-sm">
+                                  <SelectValue placeholder="Select task option" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {options.map((option) => (
+                                    <SelectItem key={option} value={option} className="text-sm">
+                                      {option}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          )
+                        })}
                       </div>
                     )}
                   </div>
                 </div>
 
                 {/* Competitive Programming Specific Fields */}
-                {formData.domain === "competitive-programming" && (
+                {formData.domains.includes("competitive-programming") && (
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Coding Profiles</h3>
                     <p className="text-sm text-gray-600">
@@ -467,33 +580,22 @@ export default function SubmissionPage() {
                   </div>
                 )}
 
-                {/* Project Information - Hidden for Competitive Programming */}
-                {formData.domain !== "competitive-programming" && (
+                {/* Project Information - Show if any non-competitive domain is selected */}
+                {formData.domains.some(domain => domain !== "competitive-programming") && (
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
-                      {formData.domain === "creative-domain" ? "Creative Work Information" : "Project Information"}
+                      {formData.domains.includes("creative-domain") && formData.domains.length === 1 ? "Creative Work Information" : "Project Information"}
                     </h3>
 
                   <div className="space-y-2">
                     <Label htmlFor="project_title" className="flex items-center space-x-1">
                       <FileText className="h-4 w-4" />
-                      <span>
-                        {formData.domain === "creative-domain" 
-                          ? (formData.task_option === "Option 3: Video Editing Portfolio" ? "Portfolio Title *" : "Design Title *")
-                          : "Project Title *"
-                        }
-                      </span>
+                      <span>Project Title *</span>
                     </Label>
                     <Input
                       id="project_title"
                       type="text"
-                      placeholder={
-                        formData.domain === "creative-domain" 
-                          ? (formData.task_option === "Option 3: Video Editing Portfolio" 
-                              ? "e.g., My Video Editing Portfolio 2024" 
-                              : "Enter your design title")
-                          : "Enter your project title"
-                      }
+                      placeholder="Enter your project title (or portfolio title for creative domains)"
                       value={formData.project_title}
                       onChange={(e) => handleInputChange("project_title", e.target.value)}
                       required
@@ -501,38 +603,25 @@ export default function SubmissionPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="project_description">
-                      {formData.domain === "creative-domain" 
-                        ? (formData.task_option === "Option 3: Video Editing Portfolio" 
-                            ? "Portfolio Overview" 
-                            : "Design Description")
-                        : "Project Description"
-                      }
-                    </Label>
+                    <Label htmlFor="project_description">Project Description</Label>
                     <Textarea
                       id="project_description"
-                      placeholder={
-                        formData.domain === "creative-domain" 
-                          ? (formData.task_option === "Option 3: Video Editing Portfolio"
-                              ? "Describe your video editing experience, types of videos you've created, and your creative style..."
-                              : "Describe your design concept, inspiration, and creative approach...")
-                          : "Briefly describe your project, its features, and what makes it unique..."
-                      }
+                      placeholder="Describe your project/work, its features, and what makes it unique. For creative domains, describe your concept and approach."
                       value={formData.project_description}
                       onChange={(e) => handleInputChange("project_description", e.target.value)}
                       rows={4}
                     />
                   </div>
 
-                  {/* Creative Domain - Different layout without GitHub */}
-                  {formData.domain === "creative-domain" ? (
+                  {/* Show different layouts based on selected domains */}
+                  {formData.domains.includes("creative-domain") ? (
                     <div className="space-y-4">
                       <div className="p-3 bg-[#8ECAE6]/10 border border-[#8ECAE6]/30 rounded-lg">
                         <p className="text-sm text-[#023047]">
                           <strong>Creative Domain Guidelines:</strong> Share your design files through cloud storage or portfolio platforms. 
                           GitHub repository is not required for creative submissions.
                         </p>
-                        {formData.task_option === "Option 3: Video Editing Portfolio" && (
+                        {formData.task_options["creative-domain"] === "Option 3: Video Editing Portfolio" && (
                           <div className="mt-3 p-3 bg-[#FFB703]/10 border border-[#FFB703]/30 rounded-lg">
                             <p className="text-sm text-[#023047]">
                               <strong>📹 Video Editing Portfolio:</strong> For video editors, we only require your past work portfolio. 
@@ -547,7 +636,7 @@ export default function SubmissionPage() {
                         <Label htmlFor="project_link" className="flex items-center space-x-1">
                           <LinkIcon className="h-4 w-4" />
                           <span>
-                            {formData.task_option === "Option 3: Video Editing Portfolio" 
+                            {formData.task_options["creative-domain"] === "Option 3: Video Editing Portfolio" 
                               ? "Video Portfolio Link *" 
                               : "Design Files/Portfolio Link"
                             }
@@ -557,7 +646,7 @@ export default function SubmissionPage() {
                           id="project_link"
                           type="url"
                           placeholder={
-                            formData.task_option === "Option 3: Video Editing Portfolio"
+                            formData.task_options["creative-domain"] === "Option 3: Video Editing Portfolio"
                               ? "https://youtube.com/playlist?list=... or https://vimeo.com/..."
                               : "https://drive.google.com/... or https://behance.net/..."
                           }
@@ -565,7 +654,7 @@ export default function SubmissionPage() {
                           onChange={(e) => handleInputChange("project_link", e.target.value)}
                         />
                         <p className="text-xs text-gray-500">
-                          {formData.task_option === "Option 3: Video Editing Portfolio"
+                          {formData.task_options["creative-domain"] === "Option 3: Video Editing Portfolio"
                             ? "Share your video portfolio via YouTube playlist, Vimeo showcase, or Google Drive folder"
                             : "Share your design files via Google Drive, Behance, Dribbble, or similar platforms"
                           }
@@ -574,7 +663,7 @@ export default function SubmissionPage() {
 
                       <div className="space-y-2">
                         <Label htmlFor="additional_links">
-                          {formData.task_option === "Option 3: Video Editing Portfolio" 
+                          {formData.task_options["creative-domain"] === "Option 3: Video Editing Portfolio" 
                             ? "Additional Video Work & Social Media" 
                             : "Additional Creative Links"
                           }
@@ -582,7 +671,7 @@ export default function SubmissionPage() {
                         <Textarea
                           id="additional_links"
                           placeholder={
-                            formData.task_option === "Option 3: Video Editing Portfolio"
+                            formData.task_options["creative-domain"] === "Option 3: Video Editing Portfolio"
                               ? "YouTube channel, Instagram reels, TikTok, other video platforms - one per line"
                               : "Portfolio website, Instagram, other design work links - one per line"
                           }
@@ -640,12 +729,12 @@ export default function SubmissionPage() {
                 </div>
                 )}
 
-                {/* Technical/Creative Details - Hidden for Competitive Programming */}
-                {formData.domain !== "competitive-programming" && (
+                {/* Technical/Creative Details - Show if any non-competitive domain is selected */}
+                {formData.domains.some(domain => domain !== "competitive-programming") && (
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
-                      {formData.domain === "creative-domain" 
-                        ? (formData.task_option === "Option 3: Video Editing Portfolio" 
+                      {formData.domains.includes("creative-domain") && formData.domains.length === 1
+                        ? (formData.task_options["creative-domain"] === "Option 3: Video Editing Portfolio" 
                             ? "Video Editing Experience" 
                             : "Creative Process")
                         : "Technical Details"
@@ -654,13 +743,13 @@ export default function SubmissionPage() {
 
                   <div className="space-y-2">
                     <Label htmlFor="technologies_used">
-                      {formData.domain === "creative-domain" ? "Tools & Software Used" : "Technologies Used"}
+                      {formData.domains.includes("creative-domain") ? "Tools & Software Used" : "Technologies Used"}
                     </Label>
                     <Textarea
                       id="technologies_used"
                       placeholder={
-                        formData.domain === "creative-domain"
-                          ? (formData.task_option === "Option 3: Video Editing Portfolio"
+                        formData.domains.includes("creative-domain")
+                          ? (formData.task_options["creative-domain"] === "Option 3: Video Editing Portfolio"
                               ? "List video editing software and tools you use (e.g., Adobe Premiere Pro, After Effects, DaVinci Resolve, Final Cut Pro, etc.)..."
                               : "List the design tools and software you used (e.g., Figma, Photoshop, Illustrator, Canva, etc.)...")
                           : "List the technologies, frameworks, libraries, and tools you used..."
@@ -673,13 +762,13 @@ export default function SubmissionPage() {
 
                   <div className="space-y-2">
                     <Label htmlFor="challenges_faced">
-                      {formData.domain === "creative-domain" ? "Creative Challenges" : "Challenges Faced"}
+                      {formData.domains.includes("creative-domain") ? "Creative Challenges" : "Challenges Faced"}
                     </Label>
                     <Textarea
                       id="challenges_faced"
                       placeholder={
-                        formData.domain === "creative-domain"
-                          ? (formData.task_option === "Option 3: Video Editing Portfolio"
+                        formData.domains.includes("creative-domain")
+                          ? (formData.task_options["creative-domain"] === "Option 3: Video Editing Portfolio"
                               ? "Describe any video editing challenges you've faced and how you solved them..."
                               : "Describe any creative challenges you faced and how you solved them...")
                           : "Describe any challenges you encountered and how you overcame them..."
@@ -692,13 +781,13 @@ export default function SubmissionPage() {
 
                   <div className="space-y-2">
                     <Label htmlFor="learning_outcomes">
-                      {formData.domain === "creative-domain" ? "Creative Learning & Growth" : "Learning Outcomes"}
+                      {formData.domains.includes("creative-domain") ? "Creative Learning & Growth" : "Learning Outcomes"}
                     </Label>
                     <Textarea
                       id="learning_outcomes"
                       placeholder={
-                        formData.domain === "creative-domain"
-                          ? (formData.task_option === "Option 3: Video Editing Portfolio"
+                        formData.domains.includes("creative-domain")
+                          ? (formData.task_options["creative-domain"] === "Option 3: Video Editing Portfolio"
                               ? "What video editing skills have you developed? What types of videos do you enjoy creating most?"
                               : "What did you learn from this creative process? What design skills did you develop or improve?")
                           : "What did you learn from this project? What skills did you develop?"
@@ -723,9 +812,9 @@ export default function SubmissionPage() {
                     <Textarea
                       id="additional_comments"
                       placeholder={
-                        formData.domain === "competitive-programming" 
+                        formData.domains.includes("competitive-programming") 
                           ? "Any additional information about your competitive programming journey, achievements, or goals..."
-                          : (formData.domain === "creative-domain" && formData.task_option === "Option 3: Video Editing Portfolio"
+                          : (formData.domains.includes("creative-domain") && formData.task_options["creative-domain"] === "Option 3: Video Editing Portfolio"
                               ? "Tell us about your video editing journey, favorite projects, or any achievements in video creation..."
                               : "Any additional information you'd like to share about your project or yourself...")
                       }
@@ -773,7 +862,7 @@ export default function SubmissionPage() {
               <CardTitle className="text-yellow-800">Important Notes</CardTitle>
             </CardHeader>
             <CardContent className="text-yellow-700 space-y-2">
-              <p>• Each student can submit only once. Make sure all information is correct.</p>
+              <p>• You can submit multiple times for different domains, but each domain can only be submitted once.</p>
               <p>• Your submission will be reviewed by ACM members after the deadline.</p>
               <p>• Selected candidates will be notified via email for Round 2 interviews.</p>
               <p>• For any queries, join our WhatsApp support group or contact us directly.</p>

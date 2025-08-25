@@ -285,11 +285,14 @@ export default function ACMRecruitmentPage() {
       <section id="domains" className="w-full py-8 sm:py-12 md:py-16 lg:py-24 xl:py-32 bg-gradient-to-br from-blue-50 to-indigo-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center space-y-3 sm:space-y-4 text-center mb-8 sm:mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight px-2">Choose Your Domain</h2>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight px-2">Choose Your Domain(s)</h2>
             <p className="mx-auto max-w-[90%] sm:max-w-[800px] text-lg sm:text-xl md:text-2xl text-[#023047]/80 leading-relaxed px-2 mt-6">
-              Select ONE domain that best matches your interests and skills. Each domain has specific tasks designed to
+              Select one or multiple domains that match your interests and skills. Each domain has specific tasks designed to
               showcase your abilities.
             </p>
+            <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg inline-block mx-2">
+              <p className="text-sm text-green-700 font-medium">✨ New: You can now apply for multiple domains!</p>
+            </div>
           </div>
 
           <div className="space-y-8">
@@ -301,7 +304,7 @@ export default function ACMRecruitmentPage() {
                   <CardTitle className="text-xl sm:text-2xl md:text-3xl text-[#023047] font-semibold">Web Development</CardTitle>
                 </div>
                 <CardDescription className="text-base sm:text-lg leading-relaxed text-[#023047]/70 mt-3">
-                  Choose ONE of the following web development tasks to demonstrate your frontend and full-stack skills.
+                  Choose one of the following web development tasks to demonstrate your frontend and full-stack skills.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4 sm:space-y-6">
@@ -427,7 +430,7 @@ export default function ACMRecruitmentPage() {
                   <CardTitle className="text-xl sm:text-2xl md:text-3xl text-[#023047] font-semibold">AI/ML</CardTitle>
                 </div>
                 <CardDescription className="text-base sm:text-lg leading-relaxed text-[#023047]/70 mt-3">
-                  Choose ONE of the following machine learning tasks to demonstrate your data science and modeling
+                  Choose one of the following machine learning tasks to demonstrate your data science and modeling
                   skills.
                 </CardDescription>
               </CardHeader>
@@ -640,7 +643,7 @@ export default function ACMRecruitmentPage() {
                   <CardTitle className="text-xl sm:text-2xl md:text-3xl text-[#023047] font-semibold">Creative Domain</CardTitle>
                 </div>
                 <CardDescription className="text-base sm:text-lg leading-relaxed text-[#023047]/70 mt-3">
-                  Choose ONE of the following creative design tasks to showcase your artistic and design skills.
+                  Choose one of the following creative design tasks to showcase your artistic and design skills.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4 sm:space-y-6">

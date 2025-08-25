@@ -31,6 +31,19 @@ export interface Submission {
 
 export async function createSubmission(submission: Submission) {
   try {
+    // Check if this roll number + domain combination already exists
+    const existing = await sql`
+      SELECT id FROM submissions 
+      WHERE roll_number = ${submission.roll_number} AND domain = ${submission.domain}
+    `
+    
+    if (existing.length > 0) {
+      return { 
+        success: false, 
+        error: `You have already submitted for ${submission.domain} domain. Each domain can only be submitted once.` 
+      }
+    }
+
     const result = await sql`
       INSERT INTO submissions (
         name, roll_number, email, phone, domain, task_option,
@@ -54,9 +67,6 @@ export async function createSubmission(submission: Submission) {
     return { success: true, data: result[0] }
   } catch (error: any) {
     console.error("Database error:", error)
-    if (error.message.includes("duplicate key")) {
-      return { success: false, error: "Roll number already exists. Each student can only submit once." }
-    }
     return { success: false, error: "Failed to submit. Please try again." }
   }
 }
@@ -70,6 +80,18 @@ export async function getSubmissionByRollNumber(rollNumber: string) {
   } catch (error) {
     console.error("Database error:", error)
     return null
+  }
+}
+
+export async function getSubmissionsByRollNumber(rollNumber: string) {
+  try {
+    const result = await sql`
+      SELECT * FROM submissions WHERE roll_number = ${rollNumber} ORDER BY created_at DESC
+    `
+    return result
+  } catch (error) {
+    console.error("Database error:", error)
+    return []
   }
 }
 

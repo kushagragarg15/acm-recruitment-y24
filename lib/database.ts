@@ -73,8 +73,16 @@ export async function createSubmission(submission: Submission) {
 
 export async function getSubmissionByRollNumber(rollNumber: string) {
   try {
+    // Additional validation at database level
+    if (!rollNumber || typeof rollNumber !== 'string' || rollNumber.length > 20) {
+      console.warn("Invalid roll number provided to database function")
+      return null
+    }
+    
+    const sanitizedRollNumber = rollNumber.trim().toLowerCase()
+    
     const result = await sql`
-      SELECT * FROM submissions WHERE roll_number = ${rollNumber}
+      SELECT * FROM submissions WHERE roll_number = ${sanitizedRollNumber}
     `
     return result[0] || null
   } catch (error) {
@@ -85,8 +93,16 @@ export async function getSubmissionByRollNumber(rollNumber: string) {
 
 export async function getSubmissionsByRollNumber(rollNumber: string) {
   try {
+    // Additional validation at database level
+    if (!rollNumber || typeof rollNumber !== 'string' || rollNumber.length > 20) {
+      console.warn("Invalid roll number provided to database function")
+      return []
+    }
+    
+    const sanitizedRollNumber = rollNumber.trim().toLowerCase()
+    
     const result = await sql`
-      SELECT * FROM submissions WHERE roll_number = ${rollNumber} ORDER BY created_at DESC
+      SELECT * FROM submissions WHERE roll_number = ${sanitizedRollNumber} ORDER BY created_at DESC
     `
     return result
   } catch (error) {

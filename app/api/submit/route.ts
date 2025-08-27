@@ -1,9 +1,111 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { createSubmission, type Submission } from "@/lib/database"
 
+// Safe rate limiting function
+function safeRateLimit(ip: string, maxRequests = 5, windowMs = 300000): boolean {
+  try {
+    // Simple in-memory rate limiting
+    const requests = globalThis.rateLimitMap || (globalThis.rateLimitMap = new Map())
+    const now = Date.now()
+    const key = ip
+    
+    const record = requests.get(key)
+    
+    if (!record || now > record.resetTime) {
+      requests.set(key, { count: 1, resetTime: now + windowMs })
+      return true
+    }
+    
+    if (record.count >= maxRequests) {
+      return false
+    }
+    
+    record.count++
+    return true
+  } catch (error) {
+    console.error('Rate limiting error:', error)
+    return true // Allow request if rate limiting fails
+  }
+}
+
+// Enhanced input sanitization function
+function sanitizeInput(input: any): string {
+  if (typeof input !== 'string') return ''
+  return input
+    .trim()
+    .replace(/[<>'"&]/g, '') // Remove potential XSS characters
+    .replace(/javascript:/gi, '') // Remove javascript: protocol
+    .replace(/data:/gi, '') // Remove data: protocol
+    .replace(/vbscript:/gi, '') // Remove vbscript: protocol
+    .substring(0, 1000) // Limit length
+}
+
+// Validate and sanitize roll number
+function validateRollNumber(rollNumber: any): boolean {
+  if (typeof rollNumber !== 'string') return false
+  const sanitized = rollNumber.trim().toLowerCase()
+  const rollNumberRegex = /^[0-9]{2}[a-zA-Z]{3}[0-9]{3}$/
+  return rollNumberRegex.test(sanitized) && sanitized.length === 8
+}
+
+// Validate email
+function validateEmail(email: any): boolean {
+  if (typeof email !== 'string') return false
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(email) && email.length <= 100 && email.length >= 5
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+    // Rate limiting - get IP from headers
+    const forwarded = request.headers.get('x-forwarded-for')
+    const ip = forwarded ? forwarded.split(',')[0] : request.headers.get('x-real-ip') || 'unknown'
+    if (!safeRateLimit(ip, 3, 300000)) { // 3 requests per 5 minutes
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Too many submission attempts. Please wait 5 minutes before trying again.",
+        },
+        { status: 429 },
+      )
+    }
+
+    // Parse JSON with error handling
+    let body
+    try {
+      body = await request.json()
+    } catch (error) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Invalid JSON format",
+        },
+        { status: 400 },
+      )
+    }
+
+    // Validate body is an object
+    if (!body || typeof body !== 'object' || Array.isArray(body)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Invalid request format",
+        },
+        { status: 400 },
+      )
+    }
+
+    // Validate request size
+    const bodyString = JSON.stringify(body)
+    if (bodyString.length > 50000) { // 50KB limit
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Request too large. Please reduce the amount of text in your submission.",
+        },
+        { status: 413 },
+      )
+    }
 
     // Validate required fields based on domains
     let requiredFields = ["name", "roll_number", "email", "phone", "domains"]
@@ -58,9 +160,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(body.email)) {
+    // Enhanced validation with sanitization
+    if (!validateEmail(body.email)) {
       return NextResponse.json(
         {
           success: false,
@@ -70,9 +171,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validate roll number format (basic validation)
-    const rollNumberRegex = /^[0-9]{2}[a-zA-Z]{3}[0-9]{3}$/
-    if (!rollNumberRegex.test(body.roll_number)) {
+    if (!validateRollNumber(body.roll_number)) {
       return NextResponse.json(
         {
           success: false,
@@ -82,34 +181,54 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Sanitize all string inputs
+    const sanitizedData = {
+      name: sanitizeInput(body.name),
+      roll_number: body.roll_number.trim().toLowerCase(),
+      email: body.email.trim().toLowerCase(),
+      phone: sanitizeInput(body.phone),
+      project_title: body.project_title ? sanitizeInput(body.project_title) : '',
+      project_description: body.project_description ? sanitizeInput(body.project_description) : null,
+      project_link: body.project_link ? sanitizeInput(body.project_link) : null,
+      github_link: body.github_link ? sanitizeInput(body.github_link) : null,
+      additional_links: body.additional_links ? sanitizeInput(body.additional_links) : null,
+      technologies_used: body.technologies_used ? sanitizeInput(body.technologies_used) : null,
+      challenges_faced: body.challenges_faced ? sanitizeInput(body.challenges_faced) : null,
+      learning_outcomes: body.learning_outcomes ? sanitizeInput(body.learning_outcomes) : null,
+      additional_comments: body.additional_comments ? sanitizeInput(body.additional_comments) : null,
+      codeforces_profile: body.codeforces_profile ? sanitizeInput(body.codeforces_profile) : null,
+      codeforces_rating: body.codeforces_rating ? sanitizeInput(body.codeforces_rating) : null,
+      leetcode_profile: body.leetcode_profile ? sanitizeInput(body.leetcode_profile) : null,
+      leetcode_rating: body.leetcode_rating ? sanitizeInput(body.leetcode_rating) : null,
+    }
+
     // Create submissions for each domain
     const results = []
     const errors = []
 
     for (const domain of body.domains) {
       const submission: Submission = {
-        name: body.name.trim(),
-        roll_number: body.roll_number.trim().toLowerCase(),
-        email: body.email.trim().toLowerCase(),
-        phone: body.phone.trim(),
+        name: sanitizedData.name,
+        roll_number: sanitizedData.roll_number,
+        email: sanitizedData.email,
+        phone: sanitizedData.phone,
         domain: domain,
         task_option: body.task_options?.[domain] || null,
         project_title: domain === "competitive-programming" 
           ? "Competitive Programming Profile" 
-          : (body.project_title?.trim() || ""),
-        project_description: body.project_description?.trim() || null,
-        project_link: body.project_link?.trim() || null,
-        github_link: body.github_link?.trim() || null,
-        additional_links: body.additional_links?.trim() || null,
-        technologies_used: body.technologies_used?.trim() || null,
-        challenges_faced: body.challenges_faced?.trim() || null,
-        learning_outcomes: body.learning_outcomes?.trim() || null,
-        additional_comments: body.additional_comments?.trim() || null,
-        // Add competitive programming specific fields
-        codeforces_profile: body.codeforces_profile?.trim() || null,
-        codeforces_rating: body.codeforces_rating?.trim() || null,
-        leetcode_profile: body.leetcode_profile?.trim() || null,
-        leetcode_rating: body.leetcode_rating?.trim() || null,
+          : sanitizedData.project_title,
+        project_description: sanitizedData.project_description,
+        project_link: sanitizedData.project_link,
+        github_link: sanitizedData.github_link,
+        additional_links: sanitizedData.additional_links,
+        technologies_used: sanitizedData.technologies_used,
+        challenges_faced: sanitizedData.challenges_faced,
+        learning_outcomes: sanitizedData.learning_outcomes,
+        additional_comments: sanitizedData.additional_comments,
+        codeforces_profile: sanitizedData.codeforces_profile,
+        codeforces_rating: sanitizedData.codeforces_rating,
+        leetcode_profile: sanitizedData.leetcode_profile,
+        leetcode_rating: sanitizedData.leetcode_rating,
       }
 
       // Save to database
@@ -143,7 +262,21 @@ export async function POST(request: NextRequest) {
       )
     }
   } catch (error) {
-    console.error("Submission API error:", error)
+    // Enhanced error logging
+    console.error("Submission API error:", {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      timestamp: new Date().toISOString(),
+      ip: (() => {
+        try {
+          const forwarded = request.headers.get('x-forwarded-for')
+          return forwarded ? forwarded.split(',')[0] : request.headers.get('x-real-ip') || 'unknown'
+        } catch {
+          return 'unknown'
+        }
+      })()
+    })
+    
     return NextResponse.json(
       {
         success: false,

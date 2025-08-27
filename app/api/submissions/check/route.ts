@@ -1,19 +1,67 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getSubmissionsByRollNumber } from "@/lib/database"
+import { getClientIP } from "@/lib/auth"
+
+// Rate limiting for submission checks
+function checkRateLimit(ip: string): boolean {
+  try {
+    const requests = globalThis.checkRateLimitMap || (globalThis.checkRateLimitMap = new Map())
+    const now = Date.now()
+    const key = `check-${ip}`
+    
+    const record = requests.get(key)
+    
+    if (!record || now > record.resetTime) {
+      requests.set(key, { count: 1, resetTime: now + 60000 }) // 1 minute window
+      return true
+    }
+    
+    if (record.count >= 10) { // 10 checks per minute
+      return false
+    }
+    
+    record.count++
+    return true
+  } catch (error) {
+    console.error('Check rate limiting error:', error)
+    return true
+  }
+}
 
 export async function GET(request: NextRequest) {
   try {
+    // Rate limiting
+    const ip = getClientIP(request)
+    if (!checkRateLimit(ip)) {
+      return NextResponse.json(
+        { success: false, error: "Too many requests. Please wait a minute." },
+        { status: 429 }
+      )
+    }
+
     const { searchParams } = new URL(request.url)
     const rollNumber = searchParams.get("roll_number")
 
-    if (!rollNumber) {
+    // Enhanced validation
+    if (!rollNumber || typeof rollNumber !== 'string') {
       return NextResponse.json(
         { success: false, error: "Roll number is required" },
         { status: 400 }
       )
     }
 
-    const submissions = await getSubmissionsByRollNumber(rollNumber.toLowerCase())
+    // Validate roll number format
+    const sanitizedRollNumber = rollNumber.trim().toLowerCase()
+    const rollNumberRegex = /^[0-9]{2}[a-zA-Z]{3}[0-9]{3}$/
+    
+    if (!rollNumberRegex.test(sanitizedRollNumber) || sanitizedRollNumber.length !== 8) {
+      return NextResponse.json(
+        { success: false, error: "Invalid roll number format" },
+        { status: 400 }
+      )
+    }
+
+    const submissions = await getSubmissionsByRollNumber(sanitizedRollNumber)
     const domains = submissions.map((sub: any) => sub.domain)
 
     return NextResponse.json({

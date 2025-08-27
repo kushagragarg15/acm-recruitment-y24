@@ -2,12 +2,26 @@ import { type NextRequest, NextResponse } from "next/server"
 import { getSubmissionsByRollNumber } from "@/lib/database"
 import { getClientIP } from "@/lib/auth"
 
-// Rate limiting for submission checks
+// Rate limiting for submission checks with memory management
 function checkRateLimit(ip: string): boolean {
   try {
-    const requests = globalThis.checkRateLimitMap || (globalThis.checkRateLimitMap = new Map())
+    // Initialize check rate limit map with cleanup
+    if (!globalThis.checkRateLimitMap) {
+      globalThis.checkRateLimitMap = new Map()
+      // Clean up old entries every 5 minutes
+      setInterval(() => {
+        const now = Date.now()
+        for (const [key, record] of globalThis.checkRateLimitMap.entries()) {
+          if (now > record.resetTime) {
+            globalThis.checkRateLimitMap.delete(key)
+          }
+        }
+      }, 300000)
+    }
+    
+    const requests = globalThis.checkRateLimitMap
     const now = Date.now()
-    const key = `check-${ip}`
+    const key = `check-${ip.substring(0, 45)}` // Limit key length
     
     const record = requests.get(key)
     

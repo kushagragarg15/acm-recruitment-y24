@@ -2,12 +2,26 @@ import { NextRequest, NextResponse } from "next/server"
 import { cookies } from "next/headers"
 import { validateAdminSession, getClientIP } from "@/lib/auth"
 
-// Safe rate limiting function
+// Safe rate limiting function with memory management
 function safeRateLimit(ip: string, maxRequests = 5, windowMs = 900000): boolean {
   try {
-    const requests = globalThis.adminRateLimitMap || (globalThis.adminRateLimitMap = new Map())
+    // Initialize admin rate limit map with cleanup
+    if (!globalThis.adminRateLimitMap) {
+      globalThis.adminRateLimitMap = new Map()
+      // Clean up old entries every 15 minutes
+      setInterval(() => {
+        const now = Date.now()
+        for (const [key, record] of globalThis.adminRateLimitMap.entries()) {
+          if (now > record.resetTime) {
+            globalThis.adminRateLimitMap.delete(key)
+          }
+        }
+      }, 900000)
+    }
+    
+    const requests = globalThis.adminRateLimitMap
     const now = Date.now()
-    const key = `admin-${ip}`
+    const key = `admin-${ip.substring(0, 45)}` // Limit key length
     
     const record = requests.get(key)
     

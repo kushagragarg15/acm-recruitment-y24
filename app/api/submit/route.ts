@@ -1,13 +1,27 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { createSubmission, type Submission } from "@/lib/database"
+import { logSecurityEvent } from "@/lib/error-monitor"
 
-// Safe rate limiting function
+// Safe rate limiting function with memory management
 function safeRateLimit(ip: string, maxRequests = 5, windowMs = 300000): boolean {
   try {
-    // Simple in-memory rate limiting
-    const requests = globalThis.rateLimitMap || (globalThis.rateLimitMap = new Map())
+    // Initialize rate limit map with cleanup
+    if (!globalThis.rateLimitMap) {
+      globalThis.rateLimitMap = new Map()
+      // Clean up old entries every 5 minutes
+      setInterval(() => {
+        const now = Date.now()
+        for (const [key, record] of globalThis.rateLimitMap.entries()) {
+          if (now > record.resetTime) {
+            globalThis.rateLimitMap.delete(key)
+          }
+        }
+      }, 300000)
+    }
+    
+    const requests = globalThis.rateLimitMap
     const now = Date.now()
-    const key = ip
+    const key = ip.substring(0, 45) // Limit key length
     
     const record = requests.get(key)
     
@@ -61,6 +75,14 @@ export async function POST(request: NextRequest) {
     const forwarded = request.headers.get('x-forwarded-for')
     const ip = forwarded ? forwarded.split(',')[0] : request.headers.get('x-real-ip') || 'unknown'
     if (!safeRateLimit(ip, 3, 300000)) { // 3 requests per 5 minutes
+      logSecurityEvent({
+        type: 'RATE_LIMIT_EXCEEDED',
+        message: 'Submission rate limit exceeded',
+        ip,
+        timestamp: new Date().toISOString(),
+        endpoint: '/api/submit'
+      })
+      
       return NextResponse.json(
         {
           success: false,
@@ -70,10 +92,35 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Parse JSON with error handling
+    // Parse JSON with enhanced error handling and size limits
     let body
     try {
+      // Check content length before parsing
+      const contentLength = request.headers.get('content-length')
+      if (contentLength && parseInt(contentLength) > 100000) { // 100KB limit
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Request too large",
+          },
+          { status: 413 },
+        )
+      }
+
       body = await request.json()
+      
+      // Validate JSON depth to prevent deeply nested attacks
+      const jsonString = JSON.stringify(body)
+      const depth = (jsonString.match(/\{/g) || []).length
+      if (depth > 10) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Request structure too complex",
+          },
+          { status: 400 },
+        )
+      }
     } catch (error) {
       return NextResponse.json(
         {
@@ -110,12 +157,28 @@ export async function POST(request: NextRequest) {
     // Validate required fields based on domains
     let requiredFields = ["name", "roll_number", "email", "phone", "domains"]
     
-    // Validate domains array
-    if (!Array.isArray(body.domains) || body.domains.length === 0) {
+    // Validate domains array with strict validation
+    if (!Array.isArray(body.domains) || body.domains.length === 0 || body.domains.length > 5) {
       return NextResponse.json(
         {
           success: false,
-          error: "At least one domain must be selected",
+          error: "Invalid domain selection. Please select 1-5 valid domains.",
+        },
+        { status: 400 },
+      )
+    }
+
+    // Validate each domain value
+    const validDomains = ["web-development", "ai-ml", "generative-ai", "creative-domain", "competitive-programming"]
+    const invalidDomains = body.domains.filter((domain: any) => 
+      typeof domain !== 'string' || !validDomains.includes(domain)
+    )
+    
+    if (invalidDomains.length > 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Invalid domain values detected.",
         },
         { status: 400 },
       )
@@ -146,9 +209,12 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check for missing fields (excluding domains which we already validated)
+    // Enhanced field validation with length limits
     const stringFields = ["name", "roll_number", "email", "phone"]
-    const missingFields = stringFields.filter((field) => !body[field]?.trim())
+    const missingFields = stringFields.filter((field) => {
+      const value = body[field]
+      return !value || typeof value !== 'string' || !value.trim() || value.length > 200
+    })
 
     if (missingFields.length > 0) {
       return NextResponse.json(
@@ -207,13 +273,26 @@ export async function POST(request: NextRequest) {
     const errors = []
 
     for (const domain of body.domains) {
+      // Additional domain validation
+      if (typeof domain !== 'string' || domain.length > 50) {
+        errors.push(`${domain}: Invalid domain format`)
+        continue
+      }
+
+      // Validate task option if provided
+      const taskOption = body.task_options?.[domain]
+      if (taskOption && (typeof taskOption !== 'string' || taskOption.length > 200)) {
+        errors.push(`${domain}: Invalid task option`)
+        continue
+      }
+
       const submission: Submission = {
         name: sanitizedData.name,
         roll_number: sanitizedData.roll_number,
         email: sanitizedData.email,
         phone: sanitizedData.phone,
         domain: domain,
-        task_option: body.task_options?.[domain] || null,
+        task_option: taskOption || null,
         project_title: domain === "competitive-programming" 
           ? "Competitive Programming Profile" 
           : sanitizedData.project_title,
@@ -231,13 +310,23 @@ export async function POST(request: NextRequest) {
         leetcode_rating: sanitizedData.leetcode_rating,
       }
 
-      // Save to database
-      const result = await createSubmission(submission)
-      
-      if (result.success) {
-        results.push(result.data)
-      } else {
-        errors.push(`${domain}: ${result.error}`)
+      // Save to database with timeout protection
+      try {
+        const result = await Promise.race([
+          createSubmission(submission),
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Database timeout')), 30000)
+          )
+        ]) as any
+        
+        if (result.success) {
+          results.push(result.data)
+        } else {
+          errors.push(`${domain}: ${result.error}`)
+        }
+      } catch (error) {
+        errors.push(`${domain}: Database error`)
+        console.error(`Database error for domain ${domain}:`, error)
       }
     }
 

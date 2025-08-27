@@ -87,8 +87,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validate credentials with secure comparison
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    // Secure credential comparison to prevent timing attacks
+    const usernameMatch = username.length === ADMIN_USERNAME.length && 
+                         username === ADMIN_USERNAME
+    const passwordMatch = password.length === ADMIN_PASSWORD.length && 
+                         password === ADMIN_PASSWORD
+    
+    if (usernameMatch && passwordMatch) {
       // Generate secure session token
       const sessionToken = generateSecureToken(username)
       

@@ -25,8 +25,9 @@ export async function validateAdminSession(): Promise<boolean> {
         return false
       }
       
-      // Validate username
-      if (username !== 'acm-admin') {
+      // Validate username using environment variable
+      const expectedUsername = process.env.ADMIN_USERNAME || 'acm-admin'
+      if (username !== expectedUsername) {
         return false
       }
       

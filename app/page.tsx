@@ -801,7 +801,7 @@ export default function ACMRecruitmentPage() {
                         <li className="flex items-center space-x-2">
                           <Clock className="h-3 w-3 text-red-500" />
                           <span>
-                            <strong>Contest venue and date:</strong> To be announced
+                            <strong>Contest venue and date:</strong> CP 1, 1st September 2025 at 6:30PM
                           </span>
                         </li>
                         <li className="flex items-center space-x-2">
@@ -821,8 +821,7 @@ export default function ACMRecruitmentPage() {
 
                     <div className="p-3 bg-yellow-50 rounded border border-yellow-200">
                       <p className="text-xs text-yellow-800 font-medium">
-                        📢 Contest details will be announced soon. Make sure to join our WhatsApp group for real-time
-                        updates!
+                        📢 To participate in the contest, select "Competitive Programming" domain and submit before 6PM on 28th August. Make sure to join our WhatsApp group for real-time updates!
                       </p>
                     </div>
                   </div>

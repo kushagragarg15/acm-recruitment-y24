@@ -1,6 +1,12 @@
 import { neon } from "@neondatabase/serverless"
 
-const sql = neon(process.env.DATABASE_URL!)
+// Validate database URL format for security
+const databaseUrl = process.env.DATABASE_URL
+if (!databaseUrl || !databaseUrl.startsWith('postgresql://')) {
+  throw new Error('Invalid or missing DATABASE_URL')
+}
+
+const sql = neon(databaseUrl)
 
 export interface Submission {
   id?: number
@@ -31,6 +37,22 @@ export interface Submission {
 
 export async function createSubmission(submission: Submission) {
   try {
+    // Additional security: Validate all required fields exist
+    if (!submission.name || !submission.roll_number || !submission.email || !submission.domain) {
+      return { success: false, error: "Missing required submission data" }
+    }
+
+    // Security: Limit submission rate per roll number (prevent spam)
+    const recentSubmissions = await sql`
+      SELECT COUNT(*) as count FROM submissions 
+      WHERE roll_number = ${submission.roll_number} 
+      AND created_at > NOW() - INTERVAL '1 hour'
+    `
+    
+    if (recentSubmissions[0]?.count >= 10) {
+      return { success: false, error: "Too many submissions in the last hour. Please wait." }
+    }
+
     // Check if this roll number + domain combination already exists
     const existing = await sql`
       SELECT id FROM submissions 
@@ -113,8 +135,9 @@ export async function getSubmissionsByRollNumber(rollNumber: string) {
 
 export async function getAllSubmissions() {
   try {
+    // Security: Limit the number of records returned to prevent memory issues
     const result = await sql`
-      SELECT * FROM submissions ORDER BY created_at DESC
+      SELECT * FROM submissions ORDER BY created_at DESC LIMIT 10000
     `
     return result
   } catch (error) {

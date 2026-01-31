@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![ACM LNMIIT Banner](https://via.placeholder.com/800x200/219EBC/FFFFFF?text=ACM+LNMIIT+Y24+Recruitment+Portal)
+![ACM LNMIIT Banner]([https://via.placeholder.com/800x200/219EBC/FFFFFF?text=ACM+LNMIIT+Y24+Recruitment+Portal](https://divyanshrastogi51.github.io/ACM-Website/))
 
 **A modern, full-stack web application for managing ACM Student Chapter LNMIIT's Y24 batch recruitment process**
 

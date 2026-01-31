@@ -2,15 +2,13 @@
 
 <div align="center">
 
-![ACM LNMIIT Banner](https://via.placeholder.com/800x200/219EBC/FFFFFF?text=ACM+LNMIIT+Y24+Recruitment+Portal)
-
-**A modern, full-stack web application for managing ACM Student Chapter LNMIIT's Y24 batch recruitment process**
+# 🎓 ACM LNMIIT Y24 Recruitment Portal
 
 <div align="center">
 
-**🌟 [TRY IT NOW - LIVE APPLICATION](https://acm-recruitment-y24.vercel.app) 🌟**
+**A modern, full-stack web application for managing ACM Student Chapter LNMIIT's Y24 batch recruitment process**
 
-</div>
+**🌟 [TRY IT NOW - LIVE APPLICATION](https://acm-recruitment-y24.vercel.app) 🌟**
 
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -31,13 +29,13 @@
 <div align="center">
 
 ### 🏠 Landing Page
-![Landing Page](https://via.placeholder.com/600x400/8ECAE6/023047?text=Landing+Page+Screenshot)
+![Landing Page](imagesforreadme/Screenshot%202026-01-31%20161825.png)
 
 ### 📝 Submission Form
-![Submission Form](https://via.placeholder.com/600x400/FFB703/023047?text=Submission+Form+Screenshot)
+![Submission Form](imagesforreadme/image.png)
 
 ### 📊 Admin Dashboard
-![Admin Dashboard](https://via.placeholder.com/600x400/219EBC/FFFFFF?text=Admin+Dashboard+Screenshot)
+![Admin Dashboard](imagesforreadme/Screenshot%202026-01-31%20161926.png)
 
 </div>
 
